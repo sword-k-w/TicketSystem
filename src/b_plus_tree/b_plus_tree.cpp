@@ -104,7 +104,21 @@ void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, std::vector<ValueType> *res
     }
     if (page->IsLeafPage()) {
       auto leaf_page = it->As<LeafPage>();
-      for (int i = 0; i < size; ++i) {
+      bool flag = true;
+      for (int i = 0; i < size || flag; ++i) {
+        if (i == size) {
+          int nxt = leaf_page->GetNextPageId();
+          if (nxt == -1) {
+            return;
+          }
+          ctx.read_set_.pop_back();
+          ctx.read_set_.emplace_back(bpm_->ReadPage(nxt));
+          it = ctx.read_set_.rbegin();
+          leaf_page = it->As<LeafPage>();
+          size = leaf_page->GetSize();
+          flag = false;
+          i = 0;
+        }
         if (rough_comparator_(leaf_page->KeyAt(i), key) == 0) {
           auto page_id = it->GetPageId();
           ctx.read_set_.pop_back();
@@ -133,7 +147,7 @@ void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, std::vector<ValueType> *res
     auto internal_page = it->As<InternalPage>();
     int pos = size;
     for (int i = 1; i < size; ++i) {
-      if (rough_comparator_(key, internal_page->KeyAt(i)) <= 0) {
+      if (comparator_(key, internal_page->KeyAt(i)) < 0) {
         pos = i;
         break;
       }

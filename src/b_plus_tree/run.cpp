@@ -2,7 +2,6 @@
 #include <string>
 #include "comparator.h"
 
-
 int main() {
 
   int n;
