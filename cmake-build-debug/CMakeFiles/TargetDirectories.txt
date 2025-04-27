@@ -1,3 +1,0 @@
-/home/sword/swordProject/TicketSystem/cmake-build-debug/CMakeFiles/run.dir
-/home/sword/swordProject/TicketSystem/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/sword/swordProject/TicketSystem/cmake-build-debug/CMakeFiles/rebuild_cache.dir
