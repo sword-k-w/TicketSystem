@@ -1,0 +1,52 @@
+#ifndef COMPARATOR_H
+#define COMPARATOR_H
+
+struct Key {
+  char key_[65];
+  int value_;
+  Key(const std::string &key = "", const int &value = 0) : value_(value) {
+    size_t size = key.size();
+    for (size_t i = 0; i < size; ++i) {
+      key_[i] = key[i];
+    }
+    for (size_t i = size; i < 65; ++i) {
+      key_[i] = '\0';
+    }
+  }
+};
+
+struct Comparator {
+  int operator () (const Key &x, const Key &y) {
+    for (int i = 0; i < 65; ++i) {
+      if (x.key_[i] != y.key_[i]) {
+        if (x.key_[i] > y.key_[i]) {
+          return 1;
+        }
+        return -1;
+      }
+    }
+    if (x.value_ > y.value_) {
+      return 1;
+    }
+    if (x.value_ < y.value_) {
+      return -1;
+    }
+    return 0;
+  }
+};
+
+struct RoughComparator {
+  int operator () (const Key &x, const Key &y) {
+    for (int i = 0; i < 65; ++i) {
+      if (x.key_[i] != y.key_[i]) {
+        if (x.key_[i] > y.key_[i]) {
+          return 1;
+        }
+        return -1;
+      }
+    }
+    return 0;
+  }
+};
+
+#endif //COMPARATOR_H
