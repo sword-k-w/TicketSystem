@@ -19,6 +19,7 @@ BPLUSTREE_TYPE::BPlusTree(std::string name, int header_page_id, BufferPoolManage
   if (root_page->root_page_id_ == 0) {
     root_page->root_page_id_ = -1;
   } else {
+    std::cout << "now page cnt : " << root_page->page_cnt_ << '\n';
     bpm_->InitPageCnt(root_page->page_cnt_);
   }
 }
@@ -130,7 +131,7 @@ void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, std::vector<ValueType> *res
     auto internal_page = it->As<InternalPage>();
     int pos = size;
     for (int i = 1; i < size; ++i) {
-      if (rough_comparator_(key, internal_page->KeyAt(i)) < 0) {
+      if (rough_comparator_(key, internal_page->KeyAt(i)) <= 0) {
         pos = i;
         break;
       }

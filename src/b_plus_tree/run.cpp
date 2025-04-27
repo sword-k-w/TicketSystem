@@ -9,7 +9,7 @@ int main() {
   std::cin >> n;
 
   auto disk_manager = std::make_shared<sjtu::DiskManager>("index");
-  auto *buffer_pool_manager = new sjtu::BufferPoolManager(50, disk_manager, 10);
+  auto *buffer_pool_manager = new sjtu::BufferPoolManager(20, disk_manager, 10);
   int page_id = buffer_pool_manager->NewPage();
   Comparator comparator;
   RoughComparator rough_comparator;
@@ -23,7 +23,9 @@ int main() {
     if (type == "insert") {
       std::cin >> value;
       Key real_key(key, value);
-      tree.Insert(real_key, value);
+      if (!tree.Insert(real_key, value)) {
+        std::cerr << "Insert failed\n";
+      }
     } else if (type == "delete") {
       std::cin >> value;
       Key real_key(key, value);
@@ -43,6 +45,7 @@ int main() {
       }
     }
   }
+  std::cout << "page cnt : " << buffer_pool_manager->PageCnt() << '\n';
   buffer_pool_manager->WritePage(page_id).AsMut<sjtu::BPlusTreeHeaderPage>()->page_cnt_ = buffer_pool_manager->PageCnt();
   buffer_pool_manager->FlushAllPages();
   delete buffer_pool_manager;
