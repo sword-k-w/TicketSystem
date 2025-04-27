@@ -13,8 +13,8 @@ namespace sjtu {
     BPlusTreeHeaderPage() = delete;
     BPlusTreeHeaderPage(const BPlusTreeHeaderPage &other) = delete;
 
-    int root_page_id_;
     int page_cnt_;
+    int root_page_id_;
   };
 
 }

@@ -45,7 +45,6 @@ int main() {
       }
     }
   }
-  std::cout << "page cnt : " << buffer_pool_manager->PageCnt() << '\n';
   buffer_pool_manager->WritePage(page_id).AsMut<sjtu::BPlusTreeHeaderPage>()->page_cnt_ = buffer_pool_manager->PageCnt();
   buffer_pool_manager->FlushAllPages();
   delete buffer_pool_manager;

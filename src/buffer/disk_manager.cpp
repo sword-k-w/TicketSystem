@@ -25,12 +25,14 @@ DiskManager::DiskManager(const std::filesystem::path &db_file) : file_name_(db_f
     if (!db_io_.is_open()) {
       throw std::exception();
     }
+  } else {
+    db_io_.seekg(BUSTUB_PAGE_SIZE);
+    db_io_.read(reinterpret_cast<char *>(&page_capacity_), 4);
   }
 
   // Initialize the database file.
   std::filesystem::resize_file(db_file, (page_capacity_ + 1) * BUSTUB_PAGE_SIZE);
   assert(static_cast<size_t>(GetFileSize(file_name_)) >= page_capacity_ * BUSTUB_PAGE_SIZE);
-
   buffer_used = nullptr;
 }
 
@@ -88,10 +90,10 @@ void DiskManager::ReadPage(int page_id, char *page_data) {
   int offset = page_id * BUSTUB_PAGE_SIZE;
 
   // Check if we have read beyond the file length.
-  if (offset > GetFileSize(file_name_)) {
-    throw std::exception();
-    return;
-  }
+  // if (offset > GetFileSize(file_name_)) {
+  //   throw std::exception();
+  //   return;
+  // }
 
   // Set the read cursor to the page offset.
   db_io_.seekg(offset);
