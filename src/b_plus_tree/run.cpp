@@ -13,7 +13,7 @@ int main() {
   Comparator comparator;
   RoughComparator rough_comparator;
 
-  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator, 30, 30);
+  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator);
   while (n--) {
     std::string type;
     std::string key;
@@ -23,7 +23,7 @@ int main() {
       std::cin >> value;
       Key real_key(key, value);
       if (!tree.Insert(real_key, value)) {
-        std::cerr << "Insert failed\n";
+        continue;
       }
     } else if (type == "delete") {
       std::cin >> value;
