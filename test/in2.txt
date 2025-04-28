@@ -1,2 +1,9 @@
-1
+8
+insert a 1
+insert a 2
+insert b 1
+insert b 2
+insert b 3
+insert c 1
 find b
+find c

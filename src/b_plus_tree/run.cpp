@@ -8,7 +8,7 @@ int main() {
   std::cin >> n;
 
   auto disk_manager = std::make_shared<sjtu::DiskManager>("index");
-  auto *buffer_pool_manager = new sjtu::BufferPoolManager(20, disk_manager, 10);
+  auto *buffer_pool_manager = new sjtu::BufferPoolManager(100, disk_manager, 10);
   int page_id = buffer_pool_manager->NewPage();
   Comparator comparator;
   RoughComparator rough_comparator;
