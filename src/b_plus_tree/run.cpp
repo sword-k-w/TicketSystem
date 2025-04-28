@@ -13,7 +13,7 @@ int main() {
   Comparator comparator;
   RoughComparator rough_comparator;
 
-  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator, 20, 20);
+  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator, 30, 30);
   while (n--) {
     std::string type;
     std::string key;
