@@ -1,7 +1,6 @@
 #ifndef B_PLUS_TREE_INTERNAL_PAGE_H
 #define B_PLUS_TREE_INTERNAL_PAGE_H
 
-#include <queue>
 #include <string>
 
 #include "b_plus_tree/b_plus_tree_page.h"

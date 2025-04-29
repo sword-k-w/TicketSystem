@@ -2,9 +2,6 @@
 #define B_PLUS_TREE_PAGE_H
 
 #include <cassert>
-#include <climits>
-#include <cstdlib>
-#include <string>
 
 #include "buffer/buffer_pool_manager.h"
 

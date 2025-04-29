@@ -2,8 +2,6 @@
 #define B_PLUS_TREE_LEAF_PAGE_H
 
 #include <string>
-#include <utility>
-#include <vector>
 
 #include "b_plus_tree/b_plus_tree_page.h"
 
