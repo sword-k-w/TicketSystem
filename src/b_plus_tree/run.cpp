@@ -42,7 +42,7 @@ int main() {
         size_t size = result.size();
         for (size_t i = 0; i < size; ++i) {
           std::cout << result[i];
-          if (i == size) {
+          if (i + 1 == size) {
             std::cout << '\n';
           } else {
             std::cout << ' ';
