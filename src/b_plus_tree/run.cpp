@@ -3,8 +3,8 @@
 #include "comparator.h"
 
 int main() {
-  freopen("input.txt", "r", stdin);
-  freopen("output.txt", "w", stdout);
+  // freopen("input.txt", "r", stdin);
+  // freopen("output.txt", "w", stdout);
 
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
@@ -18,7 +18,7 @@ int main() {
   Comparator comparator;
   RoughComparator rough_comparator;
 
-  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator, 11, 17);
+  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator, 100 ,100);
   while (n--) {
     std::string type;
     std::string key;
