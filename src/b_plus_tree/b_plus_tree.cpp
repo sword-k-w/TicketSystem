@@ -321,7 +321,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
     auto internal_page = it->As<InternalPage>();
     int pos = size;
     for (int i = 1; i < size; ++i) {
-      if (comparator_(key, internal_page->KeyAt(i)) <= 0) {
+      if (comparator_(key, internal_page->KeyAt(i)) < 0) {
         pos = i;
         break;
       }
