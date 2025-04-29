@@ -3,6 +3,11 @@
 #include "comparator.h"
 
 int main() {
+  // freopen("input.txt", "r", stdin);
+  // freopen("output.txt", "w", stdout);
+
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 
   int n;
   std::cin >> n;
@@ -22,9 +27,7 @@ int main() {
     if (type == "insert") {
       std::cin >> value;
       Key real_key(key, value);
-      if (!tree.Insert(real_key, value)) {
-        continue;
-      }
+      tree.Insert(real_key, value);
     } else if (type == "delete") {
       std::cin >> value;
       Key real_key(key, value);

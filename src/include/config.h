@@ -13,6 +13,6 @@ using txn_id_t = int64_t;      // transaction id type
 
 const txn_id_t TXN_START_ID = 1LL << 62;  // first txn id
 
-}  // namespace bustub
+}
 
 #endif

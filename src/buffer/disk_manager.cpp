@@ -90,10 +90,10 @@ void DiskManager::ReadPage(int page_id, char *page_data) {
   int offset = page_id * BUSTUB_PAGE_SIZE;
 
   // Check if we have read beyond the file length.
-  // if (offset > GetFileSize(file_name_)) {
-  //   throw std::exception();
-  //   return;
-  // }
+  if (offset > GetFileSize(file_name_)) {
+    throw std::exception();
+    return;
+  }
 
   // Set the read cursor to the page offset.
   db_io_.seekg(offset);
