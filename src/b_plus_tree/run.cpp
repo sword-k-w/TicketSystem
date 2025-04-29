@@ -43,9 +43,6 @@ int main() {
         size_t size = result.size();
         for (size_t i = 0; i < size; ++i) {
           std::cout << result[i] << " ";
-          if (i && result[i] <= result[i - 1]) {
-            exit(1);
-          }
         }
         std::cout << '\n';
       }

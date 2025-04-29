@@ -4,7 +4,7 @@
 #include <list>
 #include <memory>
 #include <unordered_map>
-#include <vector>
+#include "my_stl/vector.hpp"
 
 #include "buffer/lru_k_replacer.h"
 #include "buffer/disk_manager.h"
@@ -68,7 +68,7 @@ class FrameHeader {
    *
    * If the frame does not hold any page data, the frame contains all null bytes.
    */
-  std::vector<char> data_;
+  vector<char> data_;
 
   /**
    *
@@ -113,7 +113,7 @@ class BufferPoolManager {
   int next_page_id_;
 
   /** @brief The frame headers of the frames that this buffer pool manages. */
-  std::vector<std::shared_ptr<FrameHeader>> frames_;
+  vector<std::shared_ptr<FrameHeader>> frames_;
 
   /** @brief The page table that keeps track of the mapping between pages and buffer pool frames. */
   std::unordered_map<int, int> page_table_;

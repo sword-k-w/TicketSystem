@@ -31,7 +31,6 @@ LRUKReplacer::LRUKReplacer(size_t num_frames, size_t k) : replacer_size_(num_fra
  * @return true if a frame is evicted successfully, false if no frames can be evicted.
  */
 auto LRUKReplacer::Evict() -> std::optional<int> {
-  latch_.lock();
   ++current_timestamp_;
   int min_id = -1;
   size_t k_min_time = 1e18;
@@ -48,13 +47,11 @@ auto LRUKReplacer::Evict() -> std::optional<int> {
     }
   }
   if (min_id == -1) {
-    latch_.unlock();
     return std::nullopt;
   }
   node_store_.erase(min_id);
   --evictable_size_;
   --curr_size_;
-  latch_.unlock();
   return min_id;
 }
 
@@ -71,10 +68,8 @@ auto LRUKReplacer::Evict() -> std::optional<int> {
  * leaderboard tests.
  */
 void LRUKReplacer::RecordAccess(int frame_id) {
-  latch_.lock();
   ++current_timestamp_;
   if (frame_id > static_cast<int>(replacer_size_)) {
-    latch_.unlock();
     throw std::exception();
   }
   if (node_store_.find(frame_id) == node_store_.end()) {
@@ -82,7 +77,6 @@ void LRUKReplacer::RecordAccess(int frame_id) {
     ++curr_size_;
   }
   node_store_[frame_id].AddVisit(current_timestamp_);
-  latch_.unlock();
 }
 
 /**
@@ -102,14 +96,11 @@ void LRUKReplacer::RecordAccess(int frame_id) {
  * @param set_evictable whether the given frame is evictable or not
  */
 void LRUKReplacer::SetEvictable(int frame_id, bool set_evictable) {
-  latch_.lock();
   ++current_timestamp_;
   if (frame_id > static_cast<int>(replacer_size_)) {
-    latch_.unlock();
     throw std::exception();
   }
   if (node_store_.find(frame_id) == node_store_.end()) {
-    latch_.unlock();
     return;
   }
   auto tmp = node_store_[frame_id];
@@ -121,7 +112,6 @@ void LRUKReplacer::SetEvictable(int frame_id, bool set_evictable) {
       --evictable_size_;
     }
   }
-  latch_.unlock();
 }
 
 /**
@@ -141,20 +131,16 @@ void LRUKReplacer::SetEvictable(int frame_id, bool set_evictable) {
  * @param frame_id id of frame to be removed
  */
 void LRUKReplacer::Remove(int frame_id) {
-  latch_.lock();
   ++current_timestamp_;
   if (node_store_.find(frame_id) == node_store_.end()) {
-    latch_.unlock();
     return;
   }
   if (!node_store_[frame_id].IsEvictable()) {
-    latch_.unlock();
     throw std::exception();
   }
   node_store_.erase(frame_id);
   --curr_size_;
   --evictable_size_;
-  latch_.unlock();
 }
 
 /**
@@ -164,7 +150,6 @@ void LRUKReplacer::Remove(int frame_id) {
  * @return size_t
  */
 auto LRUKReplacer::Size() -> size_t {
-  std::scoped_lock latch(latch_);
   return evictable_size_;
 }
 

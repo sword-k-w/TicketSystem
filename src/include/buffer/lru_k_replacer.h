@@ -73,7 +73,6 @@ class LRUKReplacer {
   size_t evictable_size_{0};
   size_t replacer_size_;
   size_t k_;
-  std::mutex latch_;
 };
 
 }  // namespace bustub

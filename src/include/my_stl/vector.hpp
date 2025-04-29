@@ -199,6 +199,13 @@ public:
     capacity_ = 3;
     array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
   }
+  vector(size_t size, const T &element) : size_(size) {
+    capacity_ = size * 2;
+    array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
+    for (size_t i = 0; i < size_; ++i) {
+      new(&array_[i]) T(element);
+    }
+  }
   vector(const vector &other) {
     size_ = other.size_;
     capacity_ = other.capacity_;
@@ -414,6 +421,9 @@ public:
       ShrinkCapacity();
     }
   }
+
+  T *data() { return array_; }
+  const T *data() const { return array_; }
 
 private:
   size_t size_, capacity_;
