@@ -6,13 +6,13 @@ int main() {
   // freopen("input.txt", "r", stdin);
   // freopen("output.txt", "w", stdout);
 
-  // std::ios::sync_with_stdio(false);
-  // std::cin.tie(nullptr);
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 
   int n;
   std::cin >> n;
 
-  auto disk_manager = std::make_shared<sjtu::DiskManager>("index");
+  auto disk_manager = std::make_shared<sjtu::DiskManager>("sword_index");
   auto *buffer_pool_manager = new sjtu::BufferPoolManager(100, disk_manager, 10);
   int page_id = buffer_pool_manager->NewPage();
   Comparator comparator;
@@ -26,12 +26,10 @@ int main() {
     std::cin >> type >> key;
     if (type == "insert") {
       std::cin >> value;
-      assert(value >= 0);
       Key real_key(key, value);
       tree.Insert(real_key, value);
     } else if (type == "delete") {
       std::cin >> value;
-      assert(value >= 0);
       Key real_key(key, value);
       tree.Remove(real_key);
     } else {
