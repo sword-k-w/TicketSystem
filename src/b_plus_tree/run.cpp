@@ -6,19 +6,19 @@ int main() {
   // freopen("input.txt", "r", stdin);
   // freopen("output.txt", "w", stdout);
 
-  std::ios::sync_with_stdio(false);
-  std::cin.tie(nullptr);
+  // std::ios::sync_with_stdio(false);
+  // std::cin.tie(nullptr);
 
   int n;
   std::cin >> n;
 
   auto disk_manager = std::make_shared<sjtu::DiskManager>("index");
-  auto *buffer_pool_manager = new sjtu::BufferPoolManager(100, disk_manager, 10);
+  auto *buffer_pool_manager = new sjtu::BufferPoolManager(30, disk_manager, 10);
   int page_id = buffer_pool_manager->NewPage();
   Comparator comparator;
   RoughComparator rough_comparator;
 
-  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator);
+  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator, 5, 8);
   while (n--) {
     std::string type;
     std::string key;
@@ -41,13 +41,12 @@ int main() {
       } else {
         size_t size = result.size();
         for (size_t i = 0; i < size; ++i) {
-          std::cout << result[i];
-          if (i + 1 == size) {
-            std::cout << '\n';
-          } else {
-            std::cout << ' ';
+          std::cout << result[i] << " ";
+          if (i && result[i] <= result[i - 1]) {
+            exit(1);
           }
         }
+        std::cout << '\n';
       }
     }
   }
