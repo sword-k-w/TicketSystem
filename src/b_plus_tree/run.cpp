@@ -24,20 +24,14 @@ int main() {
     std::string key;
     int value;
     std::cin >> type >> key;
-    size_t size = key.size();
-    for (size_t i = 0; i < size; ++i) {
-      assert(std::isprint(key[i]));
-    }
-    assert(size > 0 && size <= 64);
-    if (size == 64) {
-      while (true);
-    }
     if (type == "insert") {
       std::cin >> value;
+      assert(value >= 0);
       Key real_key(key, value);
       tree.Insert(real_key, value);
     } else if (type == "delete") {
       std::cin >> value;
+      assert(value >= 0);
       Key real_key(key, value);
       tree.Remove(real_key);
     } else {

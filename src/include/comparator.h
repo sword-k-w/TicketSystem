@@ -4,7 +4,7 @@
 struct Key {
   char key_[64];
   int value_;
-  Key(const std::string &key = "", const int &value = 0) : value_(value) {
+  Key(const std::string &key = "", const int &value = -1) : value_(value) {
     int size = key.size();
     for (int i = 0; i < size; ++i) {
       key_[i] = key[i];
