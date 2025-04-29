@@ -13,17 +13,25 @@ int main() {
   std::cin >> n;
 
   auto disk_manager = std::make_shared<sjtu::DiskManager>("index");
-  auto *buffer_pool_manager = new sjtu::BufferPoolManager(30, disk_manager, 10);
+  auto *buffer_pool_manager = new sjtu::BufferPoolManager(100, disk_manager, 10);
   int page_id = buffer_pool_manager->NewPage();
   Comparator comparator;
   RoughComparator rough_comparator;
 
-  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator, 5, 8);
+  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator);
   while (n--) {
     std::string type;
     std::string key;
     int value;
     std::cin >> type >> key;
+    size_t size = key.size();
+    for (size_t i = 0; i < size; ++i) {
+      assert(std::isprint(key[i]));
+    }
+    assert(size > 0 && size <= 64);
+    if (size == 64) {
+      while (true);
+    }
     if (type == "insert") {
       std::cin >> value;
       Key real_key(key, value);
@@ -33,6 +41,7 @@ int main() {
       Key real_key(key, value);
       tree.Remove(real_key);
     } else {
+      assert(type == "find");
       std::vector<int> result;
       Key real_key(key);
       tree.GetAllValue(real_key, &result);
