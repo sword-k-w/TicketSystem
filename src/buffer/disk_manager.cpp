@@ -28,6 +28,9 @@ DiskManager::DiskManager(const std::filesystem::path &db_file) : file_name_(db_f
   } else {
     db_io_.seekg(BUSTUB_PAGE_SIZE);
     db_io_.read(reinterpret_cast<char *>(&page_capacity_), 4);
+    if (page_capacity_ < 16) {
+      page_capacity_ = 16;
+    }
   }
 
   // Initialize the database file.
