@@ -41,9 +41,13 @@ int main() {
       } else {
         size_t size = result.size();
         for (size_t i = 0; i < size; ++i) {
-          std::cout << result[i] << " ";
+          std::cout << result[i];
+          if (i == size) {
+            std::cout << '\n';
+          } else {
+            std::cout << ' ';
+          }
         }
-        std::cout << '\n';
       }
     }
   }
