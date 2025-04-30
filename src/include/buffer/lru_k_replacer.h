@@ -3,7 +3,7 @@
 
 #include <list>
 #include <optional>
-#include <unordered_map>
+#include "my_stl/map.hpp"
 
 namespace sjtu {
 
@@ -64,7 +64,7 @@ class LRUKReplacer {
 
  private:
   // Remove maybe_unused if you start using them.
-  std::unordered_map<int, LRUKNode> node_store_;
+  map<int, LRUKNode> node_store_;
   size_t current_timestamp_{0};
   size_t curr_size_{0};
   size_t evictable_size_{0};

@@ -49,7 +49,7 @@ auto LRUKReplacer::Evict() -> std::optional<int> {
   if (min_id == -1) {
     return std::nullopt;
   }
-  node_store_.erase(min_id);
+  node_store_.erase(node_store_.find(min_id));
   --evictable_size_;
   --curr_size_;
   return min_id;
@@ -138,7 +138,7 @@ void LRUKReplacer::Remove(int frame_id) {
   if (!node_store_[frame_id].IsEvictable()) {
     throw std::exception();
   }
-  node_store_.erase(frame_id);
+  node_store_.erase(node_store_.find(frame_id));
   --curr_size_;
   --evictable_size_;
 }
