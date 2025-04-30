@@ -1,12 +1,9 @@
 #ifndef LRU_K_REPLACER_H
 #define LRU_K_REPLACER_H
 
-#include <limits>
 #include <list>
-#include <mutex>  // NOLINT
 #include <optional>
 #include <unordered_map>
-#include <vector>
 
 namespace sjtu {
 

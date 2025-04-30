@@ -34,7 +34,7 @@ int main() {
       tree.Remove(real_key);
     } else {
       assert(type == "find");
-      std::vector<int> result;
+      sjtu::vector<int> result;
       Key real_key(key);
       tree.GetAllValue(real_key, &result);
       if (result.empty()) {

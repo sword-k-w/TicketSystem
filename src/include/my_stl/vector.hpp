@@ -199,6 +199,10 @@ public:
     capacity_ = 3;
     array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
   }
+  vector(size_t capacity) : capacity_(capacity) {
+    size_ = 0;
+    array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
+  }
   vector(size_t size, const T &element) : size_(size) {
     capacity_ = size * 2;
     array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
@@ -393,9 +397,6 @@ public:
       new(&array_[i]) T(array_[i + 1]);
     }
     array_[size_--].~T();
-    if (size_ * 3 <= capacity_) {
-      ShrinkCapacity();
-    }
     return iterator(array_, array_ + ind);
   }
   /**
@@ -417,9 +418,6 @@ public:
     }
     --size_;
     array_[size_].~T();
-    if (size_ * 3 <= capacity_) {
-      ShrinkCapacity();
-    }
   }
 
   T *data() { return array_; }
@@ -440,9 +438,6 @@ private:
   }
   void DoubleCapacity() {
     Adjust(size_ * 2);
-  }
-  void ShrinkCapacity() {
-    Adjust((capacity_ + 2) / 3 * 2);
   }
 };
 

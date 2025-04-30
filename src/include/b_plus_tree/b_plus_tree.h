@@ -74,10 +74,10 @@ class BPlusTree {
   void Remove(const KeyType &key);
 
   // Return the value associated with a given key
-  auto GetValue(const KeyType &key, std::vector<ValueType> *result) -> bool;
+  auto GetValue(const KeyType &key, vector<ValueType> *result) -> bool;
 
   // Return all value satisfied rough comparator
-  void GetAllValue(const KeyType &key, std::vector<ValueType> *result);
+  void GetAllValue(const KeyType &key, vector<ValueType> *result);
 
   // Return the page id of the root node
   auto GetRootPageId() const -> int;

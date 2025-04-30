@@ -43,7 +43,7 @@ auto BPLUSTREE_TYPE::IsEmpty() const -> bool { return GetRootPageId() == -1; }
  * @return : true means key exists
  */
 INDEX_TEMPLATE_ARGUMENTS
-auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result) -> bool {
+auto BPLUSTREE_TYPE::GetValue(const KeyType &key, vector<ValueType> *result) -> bool {
   // Declaration of context instance. Using the Context is not necessary but advised.
   Context ctx;
   ctx.root_page_id_ = GetRootPageId();
@@ -59,7 +59,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
       auto leaf_page = it->As<LeafPage>();
       for (int i = 0; i < size; ++i) {
         if (comparator_(leaf_page->KeyAt(i), key) == 0) {
-          result->emplace_back(leaf_page->RidAt(i));
+          result->push_back(leaf_page->RidAt(i));
           return true;
         }
       }
@@ -87,7 +87,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, std::vector<ValueType> *result
  * @param[out] result vector that stores all value that satisfied rough comparator
  */
 INDEX_TEMPLATE_ARGUMENTS
-void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, std::vector<ValueType> *result) {
+void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, vector<ValueType> *result) {
   // Declaration of context instance. Using the Context is not necessary but advised.
   Context ctx;
   ctx.root_page_id_ = GetRootPageId();
@@ -114,7 +114,7 @@ void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, std::vector<ValueType> *res
           auto guard = bpm_->ReadPage(page_id);
           leaf_page = guard.As<LeafPage>();
           while (rough_comparator_(leaf_page->KeyAt(i), key) == 0) {
-            result->emplace_back(leaf_page->RidAt(i));
+            result->push_back(leaf_page->RidAt(i));
             ++i;
             if (i == size) {
               auto nxt = leaf_page->GetNextPageId();
@@ -215,8 +215,8 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
         leaf_page->SetRidAt(pos, value);
       } else {
         // split the leaf node
-        std::vector<KeyType> leaf_key(leaf_max_size_ + 1);
-        std::vector<ValueType> leaf_rid(leaf_max_size_ + 1);
+        vector<KeyType> leaf_key(leaf_max_size_ + 1);
+        vector<ValueType> leaf_rid(leaf_max_size_ + 1, 0);
         for (int i = 0; i < pos; ++i) {
           leaf_key[i] = leaf_page->KeyAt(i);
           leaf_rid[i] = leaf_page->RidAt(i);
@@ -268,8 +268,8 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
             break;
           }
 
-          std::vector<KeyType> cur_key_vec(internal_max_size_ + 1);
-          std::vector<int> cur_page_vec(internal_max_size_ + 1);
+          vector<KeyType> cur_key_vec(internal_max_size_ + 1);
+          vector<int> cur_page_vec(internal_max_size_ + 1, 0);
           for (int i = 0; i <= cur_pos; ++i) {
             cur_key_vec[i] = cur_page->KeyAt(i);
             cur_page_vec[i] = cur_page->ValueAt(i);
@@ -403,8 +403,8 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
       auto son_id = *ctx.which_son_.rbegin();
       auto leaf_guard = bpm_->WritePage(fa_page->ValueAt(son_id));
       leaf_page = leaf_guard.template AsMut<LeafPage>();
-      std::vector<KeyType> leaf_key(leaf_max_size_ * 2);
-      std::vector<ValueType> leaf_rid(leaf_max_size_ * 2);
+      vector<KeyType> leaf_key(leaf_max_size_ * 2);
+      vector<ValueType> leaf_rid(leaf_max_size_ * 2, 0);
       if (son_id >= 1) {
         auto sibling_guard = bpm_->WritePage(fa_page->ValueAt(son_id - 1));
         auto sibling_page = sibling_guard.template AsMut<LeafPage>();
@@ -517,8 +517,8 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
           return;
         }
         fa_page = std::next(ctx.write_set_.rbegin())->AsMut<InternalPage>();
-        std::vector<KeyType> internal_key_vec(internal_max_size_ * 2);
-        std::vector<int> internal_page_vec(internal_max_size_ * 2);
+        vector<KeyType> internal_key_vec(internal_max_size_ * 2);
+        vector<int> internal_page_vec(internal_max_size_ * 2, 0);
         if (cur_pos >= 1) {
           auto sibling_guard = bpm_->WritePage(fa_page->ValueAt(cur_pos - 1));
           auto sibling_page = sibling_guard.template AsMut<InternalPage>();
