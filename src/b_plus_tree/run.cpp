@@ -6,8 +6,8 @@ int main() {
   // freopen("input.txt", "r", stdin);
   // freopen("output.txt", "w", stdout);
 
-  std::ios::sync_with_stdio(false);
-  std::cin.tie(nullptr);
+  // std::ios::sync_with_stdio(false);
+  // std::cin.tie(nullptr);
 
   int n;
   std::cin >> n;

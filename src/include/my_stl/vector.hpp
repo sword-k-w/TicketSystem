@@ -6,6 +6,7 @@
 #include "exceptions.hpp"
 
 #include <climits>
+#include <config.h>
 #include <cstddef>
 
 namespace sjtu {
@@ -197,10 +198,12 @@ public:
   vector() {
     size_ = 0;
     capacity_ = 3;
+    CheckCapacity();
     array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
   }
   vector(size_t size, const T &element = T()) : size_(size) {
     capacity_ = size * 2;
+    CheckCapacity();
     array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
     for (size_t i = 0; i < size_; ++i) {
       new(&array_[i]) T(element);
@@ -416,8 +419,12 @@ public:
     array_[size_].~T();
   }
 
-  T *data() { return array_; }
-  const T *data() const { return array_; }
+  T *data() {
+    return array_;
+  }
+  const T *data() const {
+    return array_;
+  }
 
 private:
   size_t size_, capacity_;
@@ -434,6 +441,11 @@ private:
   }
   void DoubleCapacity() {
     Adjust(size_ * 2);
+  }
+  void CheckCapacity() {
+    if (capacity_ * sizeof(T) < BUSTUB_PAGE_SIZE) { // prevent invalid memory visit
+      capacity_ = (BUSTUB_PAGE_SIZE - 1) / sizeof(T) + 1;
+    }
   }
 };
 
