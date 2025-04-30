@@ -67,9 +67,6 @@ BufferPoolManager::BufferPoolManager(size_t num_frames, std::shared_ptr<DiskMana
   // Initialize the monotonically increasing counter at 0.
   next_page_id_ = 0;
 
-  // The page table should have exactly `num_frames_` slots, corresponding to exactly `num_frames_` frames.
-  page_table_.reserve(num_frames_);
-
   // Initialize all of the frame headers, and fill the free frame list with all possible frame IDs (since all frames are
   // initially free).
   for (size_t i = 0; i < num_frames_; i++) {

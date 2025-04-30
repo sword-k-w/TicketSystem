@@ -3,7 +3,7 @@
 
 #include <list>
 #include <memory>
-#include <unordered_map>
+#include "my_stl/map.hpp"
 #include "my_stl/vector.hpp"
 
 #include "buffer/lru_k_replacer.h"
@@ -116,7 +116,7 @@ class BufferPoolManager {
   vector<std::shared_ptr<FrameHeader>> frames_;
 
   /** @brief The page table that keeps track of the mapping between pages and buffer pool frames. */
-  std::unordered_map<int, int> page_table_;
+  map<int, int> page_table_;
 
   /** @brief A list of free frames that do not hold any page's data. */
   std::list<int> free_frames_;
