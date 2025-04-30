@@ -199,11 +199,7 @@ public:
     capacity_ = 3;
     array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
   }
-  vector(size_t capacity) : capacity_(capacity) {
-    size_ = 0;
-    array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
-  }
-  vector(size_t size, const T &element) : size_(size) {
+  vector(size_t size, const T &element = T()) : size_(size) {
     capacity_ = size * 2;
     array_ = static_cast<T *>(operator new [] (capacity_ * sizeof(T)));
     for (size_t i = 0; i < size_; ++i) {
