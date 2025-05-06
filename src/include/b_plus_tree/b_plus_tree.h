@@ -11,7 +11,6 @@
 #ifndef B_PLUS_TREE_H
 #define B_PLUS_TREE_H
 
-#include <deque>
 #include <filesystem>
 #include <iostream>
 #include <optional>
@@ -21,6 +20,7 @@
 #include "b_plus_tree/b_plus_tree_internal_page.h"
 #include "b_plus_tree/b_plus_tree_leaf_page.h"
 #include "b_plus_tree/page_guard.h"
+#include "my_stl/list.hpp"
 
 namespace sjtu {
 
@@ -40,12 +40,12 @@ class Context {
   int root_page_id_{-1};
 
   // Store the write guards of the pages that you're modifying here.
-  std::deque<WritePageGuard> write_set_;
+  list<WritePageGuard> write_set_;
 
   // You may want to use this when getting value, but not necessary.
-  std::deque<ReadPageGuard> read_set_;
+  list<ReadPageGuard> read_set_;
 
-  std::deque<int> which_son_;
+  list<int> which_son_;
 
   auto IsRootPage(int page_id) -> bool { return page_id == root_page_id_; }
 };

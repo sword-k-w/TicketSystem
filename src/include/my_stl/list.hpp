@@ -1,5 +1,6 @@
 #ifndef SJTU_LIST_HPP
 #define SJTU_LIST_HPP
+#include <iostream>
 
 #include <cstddef>
 #include <exception>
@@ -23,7 +24,7 @@ protected:
     node *nxt_, *pre_;
     node() = delete;
     node(const T &val, node *nxt, node *pre) : val_(val), nxt_(nxt), pre_(pre) {}
-    node(T &&val, node *nxt, node *pre) : val_(val), nxt_(nxt), pre_(pre) {}
+    node(T &&val, node *nxt, node *pre) : val_(std::move(val)), nxt_(nxt), pre_(pre) {}
   };
 
 protected:
@@ -332,13 +333,13 @@ public:
    * return an iterator pointing to the inserted value
    * throw if the iterator is invalid
    */
-  virtual iterator insert(iterator pos, const T &value) {
-    if (pos.ptr_ == head_ || pos.ptr_ == nullptr) {
-      throw std::exception();
-    }
-    ++size_;
-    return iterator(insert(pos.ptr_, new node(value, nullptr, nullptr)));
-  }
+  // virtual iterator insert(iterator pos, const T &value) {
+  //   if (pos.ptr_ == head_ || pos.ptr_ == nullptr) {
+  //     throw std::exception();
+  //   }
+  //   ++size_;
+  //   return iterator(insert(pos.ptr_, new node(value, nullptr, nullptr)));
+  // }
 
   /**
    * remove the element at pos (the end() iterator is invalid)
@@ -362,6 +363,11 @@ public:
   void push_back(const T &value) {
     ++size_;
     insert(tail_, new node(value, nullptr, nullptr));
+  }
+
+  void emplace_back(T &&value) {
+    ++size_;
+    insert(tail_, new node(std::move(value), nullptr, nullptr));
   }
 
   /**

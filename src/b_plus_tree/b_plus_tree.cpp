@@ -52,7 +52,7 @@ auto BPLUSTREE_TYPE::GetValue(const KeyType &key, vector<ValueType> *result) -> 
   }
   ctx.read_set_.emplace_back(bpm_->ReadPage(ctx.root_page_id_));
   while (true) {
-    auto it = ctx.read_set_.rbegin();
+    auto it = --ctx.read_set_.end();
     auto page = it->As<BPlusTreePage>();
     auto size = page->GetSize();
     if (page->IsLeafPage()) {
@@ -96,7 +96,7 @@ void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, vector<ValueType> *result) 
   }
   ctx.read_set_.emplace_back(bpm_->ReadPage(ctx.root_page_id_));
   while (true) {
-    auto it = ctx.read_set_.rbegin();
+    auto it = --ctx.read_set_.end();
     auto page = it->As<BPlusTreePage>();
     auto size = page->GetSize();
     if (it->GetPageId() == 0) {
@@ -137,7 +137,7 @@ void BPLUSTREE_TYPE::GetAllValue(const KeyType &key, vector<ValueType> *result) 
           }
           ctx.read_set_.pop_back();
           ctx.read_set_.emplace_back(bpm_->ReadPage(nxt));
-          it = ctx.read_set_.rbegin();
+          it = --ctx.read_set_.end();
           leaf_page = it->As<LeafPage>();
           size = leaf_page->GetSize();
           i = -1;
@@ -189,7 +189,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
   }
   ctx.write_set_.emplace_back(bpm_->WritePage(ctx.root_page_id_));
   while (true) {
-    auto it = ctx.write_set_.rbegin();
+    auto it = --ctx.write_set_.end();
     auto page = it->As<BPlusTreePage>();
     auto size = page->GetSize();
     if (page->IsLeafPage()) {
@@ -253,7 +253,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
         bool flag = false;
         ctx.write_set_.pop_back();
         while (!ctx.write_set_.empty()) {
-          auto cur_page = ctx.write_set_.rbegin()->AsMut<InternalPage>();
+          auto cur_page = (--ctx.write_set_.end())->AsMut<InternalPage>();
           auto cur_size = cur_page->GetSize();
           int cur_pos = ctx.which_son_.back();
           if (cur_size < internal_max_size_) {  // stop split
@@ -327,7 +327,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
       }
     }
     --pos;
-    ctx.which_son_.emplace_back(pos);
+    ctx.which_son_.push_back(pos);
     ctx.write_set_.emplace_back(bpm_->WritePage(internal_page->ValueAt(pos)));
   }
 }
@@ -375,7 +375,7 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
   }
   ctx.write_set_.emplace_back(std::move(guard));
   while (true) {
-    auto it = ctx.write_set_.rbegin();
+    auto it = --ctx.write_set_.end();
     auto page = it->As<BPlusTreePage>();
     auto size = page->GetSize();
     if (page->IsLeafPage()) {
@@ -398,9 +398,9 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
         leaf_page->ChangeSizeBy(-1);
         return;
       }
-      auto fa_page = std::next(ctx.write_set_.rbegin())->AsMut<InternalPage>();
+      auto fa_page = (--(--ctx.write_set_.end()))->AsMut<InternalPage>();
       ctx.write_set_.pop_back();
-      auto son_id = *ctx.which_son_.rbegin();
+      auto son_id = *--ctx.which_son_.end();
       auto leaf_guard = bpm_->WritePage(fa_page->ValueAt(son_id));
       leaf_page = leaf_guard.template AsMut<LeafPage>();
       vector<KeyType> leaf_key(leaf_max_size_ * 2);
@@ -505,9 +505,9 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
           }
           return;
         }
-        auto cur_page = ctx.write_set_.rbegin()->AsMut<InternalPage>();
+        auto cur_page = (--ctx.write_set_.end())->AsMut<InternalPage>();
         auto cur_size = cur_page->GetSize();
-        auto cur_pos = *ctx.which_son_.rbegin();
+        auto cur_pos = *--ctx.which_son_.end();
         if (cur_size > cur_page->GetMinSize()) {
           for (int i = remove_pos + 1; i < cur_size; ++i) {
             cur_page->SetKeyAt(i - 1, cur_page->KeyAt(i));
@@ -516,7 +516,7 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
           cur_page->ChangeSizeBy(-1);
           return;
         }
-        fa_page = std::next(ctx.write_set_.rbegin())->AsMut<InternalPage>();
+        fa_page = (--(--ctx.write_set_.end()))->AsMut<InternalPage>();
         vector<KeyType> internal_key_vec(internal_max_size_ * 2);
         vector<int> internal_page_vec(internal_max_size_ * 2, 0);
         if (cur_pos >= 1) {
@@ -612,7 +612,7 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
       }
     }
     --pos;
-    ctx.which_son_.emplace_back(pos);
+    ctx.which_son_.push_back(pos);
     ctx.write_set_.emplace_back(bpm_->WritePage(internal_page->ValueAt(pos)));
   }
 }
