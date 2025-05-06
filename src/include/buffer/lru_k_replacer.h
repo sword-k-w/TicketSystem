@@ -1,9 +1,9 @@
 #ifndef LRU_K_REPLACER_H
 #define LRU_K_REPLACER_H
 
-#include <list>
 #include <optional>
 #include "my_stl/map.hpp"
+#include "my_stl/list.hpp"
 
 namespace sjtu {
 
@@ -12,7 +12,7 @@ class LRUKNode {
   /** History of last seen K timestamps of this page. Least recent timestamp stored in front. */
   // Remove maybe_unused if you start using them. Feel free to change the member variables as you want.
 
-  std::list<size_t> history_;
+  list<size_t> history_;
   size_t k_;
   bool is_evictable_{false};
 
