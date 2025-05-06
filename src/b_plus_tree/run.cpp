@@ -6,8 +6,8 @@ int main() {
   // freopen("input.txt", "r", stdin);
   // freopen("output.txt", "w", stdout);
 
-  // std::ios::sync_with_stdio(false);
-  // std::cin.tie(nullptr);
+  std::ios::sync_with_stdio(false);
+  std::cin.tie(nullptr);
 
   int n;
   std::cin >> n;
@@ -15,10 +15,10 @@ int main() {
   auto disk_manager = std::make_shared<sjtu::DiskManager>("sword_index");
   auto *buffer_pool_manager = new sjtu::BufferPoolManager(300, disk_manager, 10);
   int page_id = buffer_pool_manager->NewPage();
-  Comparator comparator;
-  RoughComparator rough_comparator;
+  sjtu::Comparator comparator;
+  sjtu::RoughComparator rough_comparator;
 
-  sjtu::BPlusTree<Key, int, Comparator, RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator);
+  sjtu::BPlusTree<sjtu::Key, int, sjtu::Comparator, sjtu::RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator);
   while (n--) {
     std::string type;
     std::string key;
@@ -26,16 +26,15 @@ int main() {
     std::cin >> type >> key;
     if (type == "insert") {
       std::cin >> value;
-      Key real_key(key, value);
+      sjtu::Key real_key(key, value);
       tree.Insert(real_key, value);
     } else if (type == "delete") {
       std::cin >> value;
-      Key real_key(key, value);
+      sjtu::Key real_key(key, value);
       tree.Remove(real_key);
     } else {
-      assert(type == "find");
       sjtu::vector<int> result;
-      Key real_key(key);
+      sjtu::Key real_key(key);
       tree.GetAllValue(real_key, &result);
       if (result.empty()) {
         std::cout << "null\n";
