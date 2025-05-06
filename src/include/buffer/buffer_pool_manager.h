@@ -1,10 +1,10 @@
 #ifndef BUFFER_POOL_MANAGER_H
 #define BUFFER_POOL_MANAGER_H
 
-#include <list>
 #include <memory>
 #include "my_stl/map.hpp"
 #include "my_stl/vector.hpp"
+#include "my_stl/list.hpp"
 
 #include "buffer/lru_k_replacer.h"
 #include "buffer/disk_manager.h"
@@ -119,7 +119,7 @@ class BufferPoolManager {
   map<int, int> page_table_;
 
   /** @brief A list of free frames that do not hold any page's data. */
-  std::list<int> free_frames_;
+  list<int> free_frames_;
 
   /** @brief The replacer to find unpinned / candidate pages for eviction. */
   std::shared_ptr<LRUKReplacer> replacer_;
