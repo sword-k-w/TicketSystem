@@ -13,7 +13,7 @@ int main() {
   std::cin >> n;
 
   auto disk_manager = std::make_shared<sjtu::DiskManager>("sword_index");
-  auto *buffer_pool_manager = new sjtu::BufferPoolManager(300, disk_manager, 10);
+  auto *buffer_pool_manager = new sjtu::BufferPoolManager(800, disk_manager, 10);
   int page_id = buffer_pool_manager->NewPage();
   sjtu::Comparator comparator;
   sjtu::RoughComparator rough_comparator;
