@@ -1,6 +1,5 @@
 #include <sstream>
 
-#include "rid.h"
 #include "b_plus_tree/b_plus_tree_leaf_page.h"
 
 #include <comparator.h>
