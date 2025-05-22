@@ -12,13 +12,7 @@ int main() {
   int n;
   std::cin >> n;
 
-  auto disk_manager = std::make_shared<sjtu::DiskManager>("sword_index");
-  auto *buffer_pool_manager = new sjtu::BufferPoolManager(1200, disk_manager, 10);
-  int page_id = buffer_pool_manager->NewPage();
-  sjtu::Comparator comparator;
-  sjtu::RoughComparator rough_comparator;
-
-  sjtu::BPlusTree<sjtu::Key, int, sjtu::Comparator, sjtu::RoughComparator> tree("tester", page_id, buffer_pool_manager, comparator, rough_comparator);
+  sjtu::BPlusTree<sjtu::Key, int, sjtu::Comparator, sjtu::RoughComparator> tree("sword_index");
   while (n--) {
     std::string type;
     std::string key;
@@ -47,8 +41,5 @@ int main() {
       }
     }
   }
-  buffer_pool_manager->WritePage(page_id).AsMut<sjtu::BPlusTreeHeaderPage>()->page_cnt_ = buffer_pool_manager->PageCnt();
-  buffer_pool_manager->FlushAllPages();
-  delete buffer_pool_manager;
   return 0;
 }

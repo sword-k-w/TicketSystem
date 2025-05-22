@@ -4,16 +4,13 @@
 namespace sjtu {
 
 INDEX_TEMPLATE_ARGUMENTS
-BPLUSTREE_TYPE::BPlusTree(std::string name, int header_page_id, BufferPoolManager *buffer_pool_manager,
-                          const KeyComparator &comparator, const RoughKeyComparator &rough_comparator,
-                          int leaf_max_size, int internal_max_size)
+BPLUSTREE_TYPE::BPlusTree(std::string name, int leaf_max_size, int internal_max_size)
     : index_name_(std::move(name)),
-      bpm_(buffer_pool_manager),
-      comparator_(std::move(comparator)),
-      rough_comparator_(std::move(rough_comparator)),
+      disk_manager_(std::make_shared<DiskManager>(index_name_)),
+      bpm_(new BufferPoolManager(1200, disk_manager_, 10)),
       leaf_max_size_(leaf_max_size),
       internal_max_size_(internal_max_size),
-      header_page_id_(header_page_id) {
+      header_page_id_(bpm_->NewPage()) {
   WritePageGuard guard = bpm_->WritePage(header_page_id_);
   auto root_page = guard.AsMut<BPlusTreeHeaderPage>();
   if (root_page->root_page_id_ == 0) {
@@ -21,6 +18,13 @@ BPLUSTREE_TYPE::BPlusTree(std::string name, int header_page_id, BufferPoolManage
   } else {
     bpm_->InitPageCnt(root_page->page_cnt_);
   }
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+BPLUSTREE_TYPE::~BPlusTree() {
+  bpm_->WritePage(header_page_id_).AsMut<sjtu::BPlusTreeHeaderPage>()->page_cnt_ = bpm_->PageCnt();
+  bpm_->FlushAllPages();
+  delete bpm_;
 }
 
 /**

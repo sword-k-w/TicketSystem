@@ -59,10 +59,11 @@ class BPlusTree {
   using LeafPage = BPlusTreeLeafPage<KeyType, ValueType, KeyComparator, RoughKeyComparator>;
 
  public:
-  explicit BPlusTree(std::string name, int header_page_id, BufferPoolManager *buffer_pool_manager,
-                     const KeyComparator &comparator, const RoughKeyComparator &rough_comparator,
+  explicit BPlusTree(std::string name,
                      int leaf_max_size = LEAF_PAGE_SLOT_CNT,
                      int internal_max_size = INTERNAL_PAGE_SLOT_CNT);
+
+  ~BPlusTree();
 
   // Returns true if this B+ tree has no keys and values.
   auto IsEmpty() const -> bool;
@@ -86,6 +87,7 @@ class BPlusTree {
 
   // member variable
   std::string index_name_;
+  std::shared_ptr<DiskManager> disk_manager_;
   BufferPoolManager *bpm_;
   KeyComparator comparator_;
   RoughKeyComparator rough_comparator_;

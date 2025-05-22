@@ -10,7 +10,6 @@ constexpr int kBase = 19260817;
 struct Key {
   int hash1_;
   int hash2_;
-  // char key_[64];
   int value_;
   Key(const std::string &key = "", const int &value = -1) : value_(value) {
     int size = key.size();
