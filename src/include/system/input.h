@@ -17,9 +17,12 @@ public:
   template<int len>
   auto GetString() -> array<char, len>;
 
+  template<int len>
+  auto GetChinese() -> array<unsigned int, len>;
+
 private:
   char las_c_{'\n'};
-  auto GetChinese() -> unsigned int;
+  auto GetSingleChinese() -> unsigned int;
 };
 
 }

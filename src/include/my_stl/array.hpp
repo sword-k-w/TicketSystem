@@ -5,9 +5,13 @@ namespace sjtu {
 
 template<typename T, int len>
 class array {
-  T a_[len];
-  array() = default;
-  array(const T &val) {
+public:
+  array() {
+    for (int i = 0; i < len; ++i) {
+      a_[i] = 0;
+    }
+  }
+  explicit array(const T &val) {
     for (int i = 0; i < len; ++i) {
       a_[i] = val;
     }
@@ -19,6 +23,25 @@ class array {
   const T &operator [] (const int &index) const {
     return a_[index];
   }
+
+  friend bool operator == (const array<T, len> &x, const array<T, len> &y) {
+    for (int i = 0; i < len; ++i) {
+      if (x[i] != y[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
+  friend bool operator != (const array<T, len> &x, const array<T, len> &y) {
+    for (int i = 0; i < len; ++i) {
+      if (x[i] != y[i]) {
+        return true;
+      }
+    }
+    return false;
+  }
+private:
+  T a_[len];
 };
 
 }
