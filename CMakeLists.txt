@@ -16,4 +16,5 @@ add_executable(code
         src/b_plus_tree/b_plus_tree_leaf_page.cpp
         src/b_plus_tree/b_plus_tree_internal_page.cpp
         src/b_plus_tree/b_plus_tree.cpp
-        src/b_plus_tree/run.cpp)
+        src/system/input.cpp
+        src/main.cpp)
