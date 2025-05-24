@@ -1,8 +1,11 @@
+#ifndef OUTPUT_HPP
+#define OUTPUT_HPP
+
 #include <string>
 
 namespace sjtu {
 
-std::string SingleChineseToString(unsigned int tmp) {
+inline std::string SingleChineseToString(unsigned int tmp) {
   std::string res;
   if (tmp <= 0x7F) { // 0xxxxxxx
     res += tmp;
@@ -34,4 +37,18 @@ std::string ChineseToString(array<unsigned int, len> tmp) {
   return res;
 }
 
+template<int len>
+std::string ArrayToString(array<char, len> tmp) {
+  std::string res;
+  for (int i = 0; i < len; ++i) {
+    if (tmp[i] == '\0') {
+      break;
+    }
+    res += tmp[i];
+  }
+  return res;
 }
+
+}
+
+#endif

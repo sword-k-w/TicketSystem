@@ -13,6 +13,7 @@ public:
   auto GetTimestamp() -> int;
   auto GetCommand() -> std::string;
   auto GetKey() -> char;
+  auto GetInteger() -> int;
 
   template<int len>
   auto GetString() -> array<char, len>;

@@ -3,7 +3,8 @@
 
 #include "b_plus_tree/b_plus_tree_internal_page.h"
 
-#include <comparator.h>
+#include "comparator.h"
+#include "system/user_system/user.h"
 
 namespace sjtu {
 /*****************************************************************************
@@ -46,21 +47,6 @@ INDEX_TEMPLATE_ARGUMENTS
 void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetKeyAt(int index, const KeyType &key) { key_array_[index] = key; }
 
 /**
- * @param value The value to search for
- * @return The index that corresponds to the specified value
- */
-INDEX_TEMPLATE_ARGUMENTS
-auto B_PLUS_TREE_INTERNAL_PAGE_TYPE::ValueIndex(const ValueType &value) const -> int {
-  int size = GetSize();
-  for (int i = 0; i < size; ++i) {
-    if (page_id_array_[i] == value) {
-      return i;
-    }
-  }
-  return -1;  // haven't found
-}
-
-/**
  * @brief Helper method to get the value associated with input "index"(a.k.a array
  * offset)
  *
@@ -74,5 +60,6 @@ INDEX_TEMPLATE_ARGUMENTS
 void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetValueAt(int index, const ValueType &value) { page_id_array_[index] = value; }
 
 template class BPlusTreeInternalPage<Key, int, Comparator, RoughComparator>;
+template class BPlusTreeInternalPage<array<char, 20>, int, UserComparator, UserComparator>;
 
 }

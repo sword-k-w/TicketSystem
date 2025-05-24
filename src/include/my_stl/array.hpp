@@ -24,7 +24,7 @@ public:
     return a_[index];
   }
 
-  friend bool operator == (const array<T, len> &x, const array<T, len> &y) {
+  friend bool operator == (const array &x, const array &y) {
     for (int i = 0; i < len; ++i) {
       if (x[i] != y[i]) {
         return false;
@@ -32,10 +32,26 @@ public:
     }
     return true;
   }
-  friend bool operator != (const array<T, len> &x, const array<T, len> &y) {
+  friend bool operator != (const array &x, const array &y) {
     for (int i = 0; i < len; ++i) {
       if (x[i] != y[i]) {
         return true;
+      }
+    }
+    return false;
+  }
+  friend bool operator < (const array &x, const array &y) {
+    for (int i = 0; i < len; ++i) {
+      if (x[i] != y[i]) {
+        return x[i] < y[i];
+      }
+    }
+    return false;
+  }
+  friend bool operator > (const array &x, const array &y) {
+    for (int i = 0; i < len; ++i) {
+      if (x[i] != y[i]) {
+        return x[i] > y[i];
       }
     }
     return false;

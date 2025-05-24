@@ -27,7 +27,7 @@ fi
 
 list=$(jq ".Groups[] | select(.GroupName == \"$1\") | .TestPoints[]" testcases/config.json)
 
-exename="code"
+exename="cmake-build-debug/code"
 if [ ! -e "$exename" ]; then
   echo "Please compile the ticket system and place the executable at \"$exename\""
   exit 1
@@ -49,9 +49,17 @@ function tmpdir () {
   fi
 }
 
+#testdir="$(tmpdir)"
+#cp "$exename" "$testdir/"
+#exe="$testdir/$exename"
+#cwd="$(pwd)"
+#basedir="$cwd/testcases"
+
 testdir="$(tmpdir)"
-cp "$exename" "$testdir/"
-exe="$testdir/$exename"
+# 提取可执行文件的文件名（例如：从 "cmake-build-debug/code" 提取 "code"）
+executable_name=$(basename "$exename")
+cp "$exename" "$testdir/"  # 复制完整路径的文件到临时目录
+exe="$testdir/$executable_name"  # 使用临时目录 + 文件名作为执行路径
 cwd="$(pwd)"
 basedir="$cwd/testcases"
 

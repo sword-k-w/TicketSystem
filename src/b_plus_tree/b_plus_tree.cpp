@@ -1,5 +1,6 @@
 #include "b_plus_tree/b_plus_tree.h"
 #include "comparator.h"
+#include "system/user_system/user.h"
 
 namespace sjtu {
 
@@ -22,7 +23,7 @@ BPLUSTREE_TYPE::BPlusTree(std::string name, int leaf_max_size, int internal_max_
 
 INDEX_TEMPLATE_ARGUMENTS
 BPLUSTREE_TYPE::~BPlusTree() {
-  bpm_->WritePage(header_page_id_).AsMut<sjtu::BPlusTreeHeaderPage>()->page_cnt_ = bpm_->PageCnt();
+  bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->page_cnt_ = bpm_->PageCnt();
   bpm_->FlushAllPages();
   delete bpm_;
 }
@@ -220,7 +221,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
       } else {
         // split the leaf node
         vector<KeyType> leaf_key(leaf_max_size_ + 1);
-        vector<ValueType> leaf_rid(leaf_max_size_ + 1, 0);
+        vector<ValueType> leaf_rid(leaf_max_size_ + 1);
         for (int i = 0; i < pos; ++i) {
           leaf_key[i] = leaf_page->KeyAt(i);
           leaf_rid[i] = leaf_page->RidAt(i);
@@ -408,7 +409,7 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
       auto leaf_guard = bpm_->WritePage(fa_page->ValueAt(son_id));
       leaf_page = leaf_guard.template AsMut<LeafPage>();
       vector<KeyType> leaf_key(leaf_max_size_ * 2);
-      vector<ValueType> leaf_rid(leaf_max_size_ * 2, 0);
+      vector<ValueType> leaf_rid(leaf_max_size_ * 2);
       if (son_id >= 1) {
         auto sibling_guard = bpm_->WritePage(fa_page->ValueAt(son_id - 1));
         auto sibling_page = sibling_guard.template AsMut<LeafPage>();
@@ -632,5 +633,6 @@ auto BPLUSTREE_TYPE::GetRootPageId() const -> int {
 }
 
 template class BPlusTree<Key, int, Comparator, RoughComparator>;
+template class BPlusTree<array<char, 20>, User, UserComparator, UserComparator>;
 
 }

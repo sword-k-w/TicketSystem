@@ -2,7 +2,8 @@
 
 #include "b_plus_tree/b_plus_tree_leaf_page.h"
 
-#include <comparator.h>
+#include "comparator.h"
+#include "system/user_system/user.h"
 
 namespace sjtu {
 
@@ -53,5 +54,6 @@ INDEX_TEMPLATE_ARGUMENTS
 void B_PLUS_TREE_LEAF_PAGE_TYPE::SetRidAt(int index, const ValueType &rid) { rid_array_[index] = rid; }
 
 template class BPlusTreeLeafPage<Key, int, Comparator, RoughComparator>;
+template class BPlusTreeLeafPage<array<char, 20>, User, UserComparator, UserComparator>;
 
 }

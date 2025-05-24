@@ -43,6 +43,17 @@ auto Input::GetKey() -> char {
   return res;
 }
 
+auto Input::GetInteger() -> int {
+  assert(las_c_ == ' ');
+  int res = 0;
+  std::cin.get(las_c_);
+  while (las_c_ >= '0' && las_c_ <= '9') {
+    res = res * 10 + las_c_;
+    std::cin.get(las_c_);
+  }
+  return res;
+}
+
 template<int len>
 auto Input::GetString() -> array<char, len> {
   assert(las_c_ == ' ');

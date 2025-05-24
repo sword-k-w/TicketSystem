@@ -45,12 +45,6 @@ class BPlusTreeInternalPage : public BPlusTreePage {
 
   void SetKeyAt(int index, const KeyType &key);
 
-  /**
-   * @param value The value to search for
-   * @return The index that corresponds to the specified value
-   */
-  auto ValueIndex(const ValueType &value) const -> int;
-
   auto ValueAt(int index) const -> ValueType;
 
   void SetValueAt(int index, const ValueType &value);
