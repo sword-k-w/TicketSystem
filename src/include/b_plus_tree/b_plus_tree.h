@@ -83,6 +83,9 @@ class BPlusTree {
   // Return the page id of the root node
   auto GetRootPageId() const -> int;
 
+  // Return the size of bpt
+  auto GetSize() const -> int;
+
  private:
 
   // member variable

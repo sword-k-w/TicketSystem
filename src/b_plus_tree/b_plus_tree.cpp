@@ -189,7 +189,9 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
     root_page->ChangeSizeBy(1);
     root_page->SetKeyAt(0, key);
     root_page->SetRidAt(0, value);
-    bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->root_page_id_ = root_page_id;
+    auto head_page = bpm_->WritePage(header_page_id_);
+    head_page.AsMut<BPlusTreeHeaderPage>()->root_page_id_ = root_page_id;
+    ++head_page.AsMut<BPlusTreeHeaderPage>()->size_;
     return true;
   }
   ctx.write_set_.emplace_back(bpm_->WritePage(ctx.root_page_id_));
@@ -321,6 +323,7 @@ auto BPLUSTREE_TYPE::Insert(const KeyType &key, const ValueType &value) -> bool 
           bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->root_page_id_ = new_root_id;
         }
       }
+      ++bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->size_;
       return true;
     }
     auto internal_page = it->As<InternalPage>();
@@ -368,6 +371,7 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
           root_page->SetRidAt(j - 1, root_page->RidAt(j));
         }
         root_page->ChangeSizeBy(-1);
+        --bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->size_;
         if (root_page->GetSize() == 0) {
           guard.Drop();
           bpm_->DeletePage(ctx.root_page_id_);
@@ -395,6 +399,7 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
       if (pos == -1) {
         return;
       }
+      --bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->size_;
       if (size > leaf_page->GetMinSize()) {
         for (int i = pos + 1; i < size; ++i) {
           leaf_page->SetKeyAt(i - 1, leaf_page->KeyAt(i));
@@ -630,6 +635,11 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
 INDEX_TEMPLATE_ARGUMENTS
 auto BPLUSTREE_TYPE::GetRootPageId() const -> int {
   return bpm_->ReadPage(header_page_id_).As<BPlusTreeHeaderPage>()->root_page_id_;
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+auto BPLUSTREE_TYPE::GetSize() const -> int {
+  return bpm_->ReadPage(header_page_id_).As<BPlusTreeHeaderPage>()->size_;
 }
 
 template class BPlusTree<Key, int, Comparator, RoughComparator>;

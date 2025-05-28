@@ -2,6 +2,7 @@
 #define SYSTEM_H
 
 #include "system/user_system/user_system.h"
+#include "system/train_system/train_system.h"
 #include "system/input.h"
 
 namespace sjtu {
@@ -16,8 +17,12 @@ public:
   void Logout();
   void QueryProfile();
   void ModifyProfile();
+  void AddTrain();
+  void DeleteTrain();
+  void ReleaseTrain();
 private:
   UserSystem user_system_;
+  TrainSystem train_system_;
   map<array<char, 20>, User> online_users_;
   Input input_;
   int timestamp_;

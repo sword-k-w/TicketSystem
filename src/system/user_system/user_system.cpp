@@ -9,8 +9,7 @@ auto UserSystem::AddUser(const User &user) -> bool {
 
 auto UserSystem::QueryUser(const array<char, 20> &username) -> User {
   vector<User> tmp;
-  users_.GetValue(username, &tmp);
-  if (tmp.empty()) {
+  if (users_.GetValue(username, &tmp)) {
     return {};
   }
   assert(tmp.size() == 1);

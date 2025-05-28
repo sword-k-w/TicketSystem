@@ -3,7 +3,7 @@
 
 namespace sjtu {
 
-System::System(const std::string &name) : user_system_(name + "_user") {}
+System::System(const std::string &name) : user_system_(name + "_user"), train_system_(name + "_train") {}
 
 void System::PrintTimestamp() const {
   std::cout << "[" << timestamp_ << "] ";
@@ -24,6 +24,12 @@ void System::Run() {
       QueryProfile();
     } else if (command == "modify_profile") {
       ModifyProfile();
+    } else if (command == "add_train") {
+      AddTrain();
+    } else if (command == "delete_train") {
+      DeleteTrain();
+    } else if (command == "release_train") {
+      ReleaseTrain();
     } else {
       assert(command == "exit");
       std::cout << "bye\n";
@@ -129,9 +135,9 @@ void System::QueryProfile() {
     std::cout << "-1\n";
   } else {
     auto user = user_system_.QueryUser(username);
-    if (it->second.privilege_ >= user.privilege_) { // if not found, user.privilege == 11
+    if (it->second.privilege_ > user.privilege_ || cur_username == username) { // if not found, user.privilege == 11
       std::cout << ArrayToString<20>(username) << " " << ChineseToString<5>(user.name_)
-         << " " << ArrayToString<30>(user.mailAddr_) << " " << user.privilege_ << '\n';
+         << " " << ArrayToString<30>(user.mailAddr_) << " " << static_cast<unsigned int>(user.privilege_) << '\n';
     } else {
       std::cout << "-1\n";
     }
@@ -182,11 +188,89 @@ void System::ModifyProfile() {
       user_system_.RemoveUser(user.username_);
       user_system_.AddUser(user);
       std::cout << ArrayToString<20>(user.username_) << " " << ChineseToString<5>(user.name_)
-         << " " << ArrayToString<30>(user.mailAddr_) << " " << user.privilege_ << '\n';
+         << " " << ArrayToString<30>(user.mailAddr_) << " " << static_cast<unsigned int>(user.privilege_) << '\n';
     } else {
       std::cout << "-1\n";
     }
   }
 }
+
+void System::AddTrain() {
+  Train train;
+  array<array<unsigned int, 10>, 100> stations;
+  int startTime;
+  array<int, 99> travelTimes;
+  while (true) {
+    auto key = input_.GetKey();
+    if (key == 'i') {
+      train.trainID_ = input_.GetString<20>();
+    } else if (key == 'n') {
+      train.stationNum_ = input_.GetInteger();
+    } else if (key == 'm') {
+      train.seatNum_ = array<int, 99>(input_.GetInteger());
+    } else if (key == 's') {
+      stations = input_.GetChineseArray<10, 100>();
+    } else if (key == 'p') {
+      train.prices_ = input_.GetIntegerArray<99>();
+    } else if (key == 'x') {
+      startTime = input_.GetTime();
+    } else if (key == 't') {
+      travelTimes = input_.GetIntegerArray<99>();
+    } else if (key == 'o') {
+      train.stopoverTimes_ = input_.GetIntegerArray<98>();
+    } else if (key == 'd') {
+      train.saleDate_start_ = input_.GetDate();
+      train.saleDate_end_ = input_.GetDate();
+    } else if (key == 'y') {
+      train.type_ = input_.GetChar();
+    } else {
+      assert(key == '\n');
+      break;
+    }
+  }
+  if (train_system_.QueryTrain(train.trainID_).trainID_[0] == '\0') {
+    std::cout << "-1\n";
+  } else {
+    for (int i = 0; i < train.stationNum_; ++i) {
+      train.stations_[i] = train_system_.StationID(stations[i]);
+    }
+    train.arrivingTimes_[0] = startTime;
+    for (int i = 1; i < train.stationNum_; ++i) {
+      train.arrivingTimes_[i] = train.arrivingTimes_[i - 1] + travelTimes[i - 1];
+      if (i > 1) {
+        train.arrivingTimes_[i] += train.stopoverTimes_[i - 2];
+      }
+    }
+    train_system_.AddTrain(train);
+    std::cout << "0\n";
+  }
+}
+
+void System::DeleteTrain() {
+  assert(input_.GetKey() == 'i');
+  array<char, 20> trainID = input_.GetString<20>();
+  assert(input_.GetKey() == '\n');
+  auto train = train_system_.QueryTrain(trainID);
+  if (train.trainID_[0] != '\0' && !train.is_released_) {
+    train_system_.DeleteTrain(trainID);
+    std::cout << "0\n";
+  } else {
+    std::cout << "-1\n";
+  }
+}
+
+void System::ReleaseTrain() {
+  assert(input_.GetKey() == 'i');
+  array<char, 20> trainID = input_.GetString<20>();
+  assert(input_.GetKey() == '\n');
+  auto train = train_system_.QueryTrain(trainID);
+  if (train.trainID_[0] != '\0' && !train.is_released_) {
+    train_system_.ReleaseTrain(train);
+    std::cout << "0\n";
+  } else {
+    std::cout << "-1\n";
+  }
+}
+
 
 }

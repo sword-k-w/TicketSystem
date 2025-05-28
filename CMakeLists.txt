@@ -20,5 +20,6 @@ add_executable(code
         src/b_plus_tree/b_plus_tree.cpp
         src/system/input.cpp
         src/system/user_system/user_system.cpp
+        src/system/train_system/train_system.cpp
         src/system/system.cpp
         src/main.cpp)

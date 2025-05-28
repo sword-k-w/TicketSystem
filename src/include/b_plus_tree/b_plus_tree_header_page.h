@@ -14,6 +14,7 @@ namespace sjtu {
     BPlusTreeHeaderPage(const BPlusTreeHeaderPage &other) = delete;
 
     int page_cnt_;
+    int size_;
     int root_page_id_;
   };
 

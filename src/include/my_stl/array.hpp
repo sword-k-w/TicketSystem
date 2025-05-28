@@ -8,7 +8,7 @@ class array {
 public:
   array() {
     for (int i = 0; i < len; ++i) {
-      a_[i] = 0;
+      a_[i] = T();
     }
   }
   explicit array(const T &val) {

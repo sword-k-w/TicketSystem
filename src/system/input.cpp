@@ -3,6 +3,10 @@
 
 namespace sjtu {
 
+void Input::Skip() {
+  std::cin.get(las_c_);
+}
+
 auto Input::GetTimestamp() -> int {
   assert(las_c_ == '\n');
   std::cin.get(las_c_);
@@ -43,14 +47,59 @@ auto Input::GetKey() -> char {
   return res;
 }
 
-auto Input::GetInteger() -> int {
+auto Input::GetChar() -> char {
   assert(las_c_ == ' ');
+  std::cin.get(las_c_);
+  char res = las_c_;
+  std::cin.get(las_c_);
+  return res;
+}
+
+auto Input::GetInteger() -> int {
+  assert(las_c_ == ' ' || las_c_ == '|');
   int res = 0;
   std::cin.get(las_c_);
+  if (las_c_ == '_') {
+    Skip();
+    return -1;
+  }
   while (las_c_ >= '0' && las_c_ <= '9') {
-    res = res * 10 + las_c_;
+    res = res * 10 + las_c_ - '0';
     std::cin.get(las_c_);
   }
+  return res;
+}
+
+auto Input::GetDate() -> int {
+  Skip();
+  int res = 0;
+  std::cin.get(las_c_);
+  assert(las_c_ > '5' && las_c_ < '9');
+  if (las_c_ == '7') {
+    res = 30;
+  } else if (las_c_ == '8') {
+    res = 61;
+  }
+  Skip();
+  std::cin.get(las_c_);
+  res += 10 * (las_c_ - '0');
+  std::cin.get(las_c_);
+  res += las_c_ - '1';
+  Skip();
+  return res;
+}
+
+auto Input::GetTime() -> int {
+  int res = 0;
+  std::cin.get(las_c_);
+  res = (las_c_ - '0') * 600;
+  std::cin.get(las_c_);
+  res += (las_c_ - '0') * 60;
+  Skip();
+  std::cin.get(las_c_);
+  res += (las_c_ - '0') * 10;
+  std::cin.get(las_c_);
+  res += las_c_ - '0';
   return res;
 }
 
@@ -71,7 +120,7 @@ auto Input::GetSingleChinese() -> unsigned int {
   unsigned int res = 0;
   std::cin.get(las_c_);
   if ((las_c_ & 0x80) == 0) { // 0xxxxxxxx
-    assert(las_c_ == ' ' || las_c_ == '\n');
+    assert(las_c_ == ' ' || las_c_ == '\n' || las_c_ == '|');
     return 0;
   }
   if ((las_c_ & 0xE0) == 0xC0) { // 110xxxxx 10xxxxxxx
@@ -99,7 +148,7 @@ auto Input::GetSingleChinese() -> unsigned int {
 
 template<int len>
 auto Input::GetChinese() -> array<unsigned int, len> {
-  assert(las_c_ == ' ');
+  assert(las_c_ == ' ' || las_c_ == '|');
   int pos = 0;
   array<unsigned int, len> res;
   unsigned int val = GetSingleChinese();
@@ -110,9 +159,42 @@ auto Input::GetChinese() -> array<unsigned int, len> {
   return res;
 }
 
+template<int len>
+auto Input::GetIntegerArray() -> array<int, len> {
+  assert(las_c_ == ' ');
+  int pos = 0;
+  array<int, len> res;
+  int val = GetInteger();
+  if (val == -1) {
+    return res;
+  }
+  while (las_c_ == '|') {
+    res[pos++] = val;
+    val = GetInteger();
+  }
+  res[pos] = val;
+  return res;
+}
+
+template<int len1, int len2>
+auto Input::GetChineseArray() -> array<array<unsigned int, len1>, len2> {
+  assert(las_c_ == ' ');
+  int pos = 0;
+  array<array<unsigned int, len1>, len2> res;
+  array<unsigned int, len1> val = GetChinese<len1>();
+  while (las_c_ == '|') {
+    res[pos++] = val;
+    val = GetChinese<len1>();
+  }
+  res[pos] = val;
+  return res;
+}
+
 template auto Input::GetString<20>() -> array<char, 20>;
 template auto Input::GetString<30>() -> array<char, 30>;
 template auto Input::GetChinese<5>() -> array<unsigned int, 5>;
 template auto Input::GetChinese<10>() -> array<unsigned int, 10>;
+template auto Input::GetIntegerArray<99>() -> array<int, 99>;
+template auto Input::GetChineseArray<10, 100>() -> array<array<unsigned int, 10>, 100>;
 
 }
