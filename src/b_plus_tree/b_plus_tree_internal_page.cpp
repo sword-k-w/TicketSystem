@@ -5,6 +5,7 @@
 
 #include "comparator.h"
 #include "system/user_system/user.h"
+#include "system/train_system/train.h"
 
 namespace sjtu {
 /*****************************************************************************
@@ -61,5 +62,8 @@ void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetValueAt(int index, const ValueType &valu
 
 template class BPlusTreeInternalPage<Key, int, Comparator, RoughComparator>;
 template class BPlusTreeInternalPage<array<char, 20>, int, UserComparator, UserComparator>;
+template class BPlusTreeInternalPage<array<char, 20>, int, TrainComparator, TrainComparator>;
+template class BPlusTreeInternalPage<array<unsigned int, 10>, int, StationComparator, StationComparator>;
+template class BPlusTreeInternalPage<StationTrain, int, StationTrainComparator, StationIDComparator>;
 
 }

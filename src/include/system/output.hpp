@@ -2,6 +2,7 @@
 #define OUTPUT_HPP
 
 #include <string>
+#include <iostream>
 
 namespace sjtu {
 
@@ -47,6 +48,20 @@ std::string ArrayToString(array<char, len> tmp) {
     res += tmp[i];
   }
   return res;
+}
+
+inline void PrintTime(int time) {
+  int day = time / 1440;
+  int hour = time % 1440 / 60;
+  int minute = time % 1440 % 60;
+  if (day < 30) {
+    std::cout << "06-" << day + 1;
+  } else if (day < 61) {
+    std::cout << "07-" << day - 29;
+  } else {
+    std::cout << "08-" << day - 60;
+  }
+  std::cout << ' ' << hour << ':' << minute;
 }
 
 }

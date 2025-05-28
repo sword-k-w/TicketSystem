@@ -3,12 +3,14 @@
 
 #include "system/train_system/train.h"
 #include "b_plus_tree/b_plus_tree.h"
+#include "memory_river/memory_river.hpp"
 
 namespace sjtu {
 
 class TrainSystem {
 public:
-  auto StationID(const array<unsigned int, 10> &station) -> int;
+  auto StationID(array<unsigned int, 10> &station) -> int;
+  auto StationName(const int &id) -> array<unsigned int, 10>;
   auto AddTrain(const Train &train) -> bool;
   void DeleteTrain(const array<char, 20> &trainID);
   void ReleaseTrain(Train &train);
@@ -20,6 +22,7 @@ public:
 private:
   BPlusTree<array<char, 20>, Train, TrainComparator, TrainComparator> trains_;
   BPlusTree<array<unsigned int, 10>, int, StationComparator, StationComparator> station_id_;
+  MemoryRiver<array<unsigned int, 10>> station_name_;
   BPlusTree<StationTrain, array<char, 20>, StationTrainComparator, StationIDComparator> station_info_;
 };
 

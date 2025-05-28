@@ -4,6 +4,7 @@
 
 #include "comparator.h"
 #include "system/user_system/user.h"
+#include "system/train_system/train.h"
 
 namespace sjtu {
 
@@ -55,5 +56,8 @@ void B_PLUS_TREE_LEAF_PAGE_TYPE::SetRidAt(int index, const ValueType &rid) { rid
 
 template class BPlusTreeLeafPage<Key, int, Comparator, RoughComparator>;
 template class BPlusTreeLeafPage<array<char, 20>, User, UserComparator, UserComparator>;
+template class BPlusTreeLeafPage<array<char, 20>, Train, TrainComparator, TrainComparator>;
+template class BPlusTreeLeafPage<array<unsigned int, 10>, int, StationComparator, StationComparator>;
+template class BPlusTreeLeafPage<StationTrain, array<char, 20>, StationTrainComparator, StationIDComparator>;
 
 }

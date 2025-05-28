@@ -30,6 +30,8 @@ void System::Run() {
       DeleteTrain();
     } else if (command == "release_train") {
       ReleaseTrain();
+    } else if (command == "query_train") {
+      QueryTrain();
     } else {
       assert(command == "exit");
       std::cout << "bye\n";
@@ -272,5 +274,51 @@ void System::ReleaseTrain() {
   }
 }
 
+void System::QueryTrain() {
+  array<char, 20> trainID;
+  int date;
+  while (true) {
+    auto key = input_.GetKey();
+    if (key == 'i') {
+      trainID = input_.GetString<20>();
+    } else if (key == 'd') {
+      date = input_.GetDate();
+    } else {
+      assert(key == '\n');
+      break;
+    }
+  }
+  auto train = train_system_.QueryTrain(trainID);
+  if (train.trainID_[0] != '\0' || (train.saleDate_start_ <= date && date <= train.saleDate_end_)) {
+    int total_price = 0;
+    std::cout << ArrayToString<20>(train.trainID_) << ' ' << train.type_ << '\n';
+    for (int i = 0; i < train.stationNum_; ++i) {
+      std::cout << ChineseToString<10>(train_system_.StationName(train.stations_[0])) << " ";
+      if (i == 0) {
+        std::cout << "xx-xx xx:xx";
+      } else {
+        PrintTime(date * 14400 + train.arrivingTimes_[i]);
+      }
+
+      std::cout << " -> ";
+
+      if (i + 1 == train.stationNum_) {
+        std::cout << "xx-xx xx:xx";
+      } else {
+        PrintTime(date * 14400 + train.arrivingTimes_[i] + (i == 0 ? 0 : train.stopoverTimes_[i - 1]));
+      }
+
+      std::cout << ' ' << total_price << ' ';
+      if (i + 1 == train.stationNum_) {
+        std::cout << "x\n";
+      } else {
+        total_price += train.prices_[i];
+        std::cout << train.seatNum_[i] << '\n';
+      }
+    }
+  } else {
+    std::cout << "-1\n";
+  }
+}
 
 }

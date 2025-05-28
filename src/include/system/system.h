@@ -20,6 +20,7 @@ public:
   void AddTrain();
   void DeleteTrain();
   void ReleaseTrain();
+  void QueryTrain();
 private:
   UserSystem user_system_;
   TrainSystem train_system_;
