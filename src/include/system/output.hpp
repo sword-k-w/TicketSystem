@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <cassert>
 
 namespace sjtu {
 
@@ -50,18 +51,33 @@ std::string ArrayToString(array<char, len> tmp) {
   return res;
 }
 
+inline void PrintTwoBitNumber(int x) {
+  if (x < 10) {
+    std::cout << '0' << x;
+  } else {
+    assert(x < 100);
+    std::cout << x;
+  }
+}
+
 inline void PrintTime(int time) {
   int day = time / 1440;
   int hour = time % 1440 / 60;
   int minute = time % 1440 % 60;
   if (day < 30) {
-    std::cout << "06-" << day + 1;
+    std::cout << "06-";
+    PrintTwoBitNumber(day + 1);
   } else if (day < 61) {
-    std::cout << "07-" << day - 29;
+    std::cout << "07-";
+    PrintTwoBitNumber(day - 29);
   } else {
-    std::cout << "08-" << day - 60;
+    std::cout << "08-";
+    PrintTwoBitNumber(day - 60);
   }
-  std::cout << ' ' << hour << ':' << minute;
+  std::cout << ' ';
+  PrintTwoBitNumber(hour);
+  std::cout << ':';
+  PrintTwoBitNumber(minute);
 }
 
 }

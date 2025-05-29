@@ -3,6 +3,7 @@
 
 #include "system/user_system/user_system.h"
 #include "system/train_system/train_system.h"
+#include "system/ticket_system/ticket.h"
 #include "system/input.h"
 
 namespace sjtu {
@@ -21,6 +22,7 @@ public:
   void DeleteTrain();
   void ReleaseTrain();
   void QueryTrain();
+  void QueryTicket();
 private:
   UserSystem user_system_;
   TrainSystem train_system_;

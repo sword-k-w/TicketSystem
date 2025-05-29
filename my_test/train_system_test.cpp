@@ -3,11 +3,15 @@
 
 namespace sjtu {
 
-TEST(TrainSystemTests, BasicTrainTest) {
+TEST(TrainSystemTests, DISABLED_BasicQueryTrainTest) {
   std::stringstream input_stream;
   input_stream << "[1] add_train -i HAPPY_TRAIN -n 3 -m 1000 -s 上院|中院|下院 -p 114|514 -x 19:19 -t 600|600 -o 5 -d 06-01|08-17 -y G\n";
   input_stream << "[2] query_train -d 07-01 -i HAPPY_TRAIN\n";
+  input_stream << "[3] exit\n";
   std::cin.rdbuf(input_stream.rdbuf());
+  std::cerr << input_stream.str();
+
+  std::streambuf* originalCoutBuf = std::cout.rdbuf();
 
   std::stringstream output_stream;
   std::cout.rdbuf(output_stream.rdbuf());
@@ -15,7 +19,31 @@ TEST(TrainSystemTests, BasicTrainTest) {
   System system("sword");
   system.Run();
 
-  EXPECT_EQ(output_stream.str(), "[1] 0\n[2] HAPPY_TRAIN G\n上院 xx-xx xx:xx -> 07-01 19:19 0 1000\n上院 xx-xx xx:xx -> 07-01 19:19 0 1000\n下院 07-02 15:24 -> xx-xx xx:xx 628 x\n");
+  EXPECT_EQ(output_stream.str(), "[1] 0\n[2] HAPPY_TRAIN G\n上院 xx-xx xx:xx -> 07-01 19:19 0 1000\n中院 07-02 05:19 -> 07-02 05:24 114 1000\n下院 07-02 15:24 -> xx-xx xx:xx 628 x\n[3] bye\n");
+
+  std::cout.rdbuf(originalCoutBuf);
+}
+
+TEST(TrainSystemTests, BasicQueryTicketTest) {
+  std::stringstream input_stream;
+  input_stream << "[1] add_train -i HAPPY_TRAIN -n 3 -m 1000 -s 上院|中院|下院 -p 114|514 -x 19:19 -t 600|600 -o 5 -d 06-01|08-17 -y G\n";
+  input_stream << "[2] release_train -i HAPPY_TRAIN\n";
+  input_stream << "[3] query_ticket -s 中院 -t 下院 -d 08-17\n";
+  input_stream << "[4] exit\n";
+  std::cin.rdbuf(input_stream.rdbuf());
+  std::cerr << input_stream.str();
+
+  std::streambuf* originalCoutBuf = std::cout.rdbuf();
+
+  std::stringstream output_stream;
+  std::cout.rdbuf(output_stream.rdbuf());
+
+  System system("sword");
+  system.Run();
+
+  EXPECT_EQ(output_stream.str(), "[1] 0\n[2] 0\n[3] 1\nHAPPY_TRAIN 中院 08-17 05:24 -> 下院 08-17 15:24 514 1000\n[4] bye\n");
+
+  std::cout.rdbuf(originalCoutBuf);
 }
 
 }

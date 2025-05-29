@@ -10,6 +10,16 @@ void Input::Skip() {
 auto Input::GetTimestamp() -> int {
   assert(las_c_ == '\n');
   std::cin.get(las_c_);
+  if (las_c_ != '[') {
+    std::cerr << las_c_ << '\n';
+    std::cin.get(las_c_);
+    std::cerr << las_c_ << '\n';
+    std::cin.get(las_c_);
+    std::cerr << las_c_ << '\n';
+    std::cin.get(las_c_);
+    std::cerr << las_c_ << '\n';
+    exit(1);
+  }
   assert(las_c_ == '[');
   int res = 0;
   std::cin.get(las_c_);
@@ -100,6 +110,7 @@ auto Input::GetTime() -> int {
   res += (las_c_ - '0') * 10;
   std::cin.get(las_c_);
   res += las_c_ - '0';
+  std::cin.get(las_c_);
   return res;
 }
 
@@ -190,6 +201,7 @@ auto Input::GetChineseArray() -> array<array<unsigned int, len1>, len2> {
   return res;
 }
 
+template auto Input::GetString<4>() -> array<char, 4>;
 template auto Input::GetString<20>() -> array<char, 20>;
 template auto Input::GetString<30>() -> array<char, 30>;
 template auto Input::GetChinese<5>() -> array<unsigned int, 5>;

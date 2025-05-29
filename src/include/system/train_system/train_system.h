@@ -9,15 +9,18 @@ namespace sjtu {
 
 class TrainSystem {
 public:
-  auto StationID(array<unsigned int, 10> &station) -> int;
+  auto StationID(array<unsigned int, 10> &station, bool add_new) -> int;
   auto StationName(const int &id) -> array<unsigned int, 10>;
   auto AddTrain(const Train &train) -> bool;
   void DeleteTrain(const array<char, 20> &trainID);
   void ReleaseTrain(Train &train);
   auto QueryTrain(const array<char, 20> &trainID) -> Train;
+  void QueryStationInfo(const int &id, vector<array<char, 20>> *info);
   TrainSystem() = delete;
   explicit TrainSystem(const std::string &name) : trains_(name + "_main"),
-    station_id_(name + "_station_id"), station_info_(name + "_station_info") {}
+    station_id_(name + "_station_id"), station_info_(name + "_station_info"), station_name_(name + "_station_name") {
+    station_name_.Initialise();
+  }
 
 private:
   BPlusTree<array<char, 20>, Train, TrainComparator, TrainComparator> trains_;

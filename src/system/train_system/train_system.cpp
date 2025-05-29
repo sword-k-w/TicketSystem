@@ -2,15 +2,18 @@
 
 namespace sjtu {
 
-auto TrainSystem::StationID(array<unsigned int, 10> &station) -> int {
+auto TrainSystem::StationID(array<unsigned int, 10> &station, bool add_new) -> int {
   vector<int> tmp;
   if (station_id_.GetValue(station, &tmp)) {
     return tmp[0];
   }
-  int new_id = station_id_.GetSize() + 1;
-  station_id_.Insert(station, new_id);
-  station_name_.Update(station, new_id);
-  return new_id;
+  if (add_new) {
+    int new_id = station_id_.GetSize() + 1;
+    station_id_.Insert(station, new_id);
+    station_name_.Update(station, new_id);
+    return new_id;
+  }
+  return -1;
 }
 
 auto TrainSystem::StationName(const int &id) -> array<unsigned int, 10> {
@@ -18,7 +21,6 @@ auto TrainSystem::StationName(const int &id) -> array<unsigned int, 10> {
   station_name_.Read(res, id);
   return res;
 }
-
 
 auto TrainSystem::AddTrain(const Train &train) -> bool {
   return trains_.Insert(train.trainID_, train);
@@ -40,11 +42,16 @@ void TrainSystem::ReleaseTrain(Train &train) {
 
 auto TrainSystem::QueryTrain(const array<char, 20> &trainID) -> Train {
   vector<Train> tmp;
-  if (trains_.GetValue(trainID, &tmp)) {
+  if (!trains_.GetValue(trainID, &tmp)) {
     return {};
   }
   assert(tmp.size() == 1);
   return tmp[0];
 }
+
+void TrainSystem::QueryStationInfo(const int &id, vector<array<char, 20>> *info) {
+  station_info_.GetAllValue({id}, info);
+}
+
 
 }

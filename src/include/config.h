@@ -8,6 +8,7 @@ static constexpr int BUFFER_POOL_SIZE = 128;                                    
 static constexpr int DEFAULT_DB_IO_SIZE = 16;                                        // starting size of file on disk
 static constexpr int BUCKET_SIZE = 50;                                               // size of extendible hash bucket
 static constexpr int LRUK_REPLACER_K = 10;                                           // backward k-distance for lru-k
+static constexpr int MAX_SEAT_NUM = 100000;
 
 using txn_id_t = int64_t;      // transaction id type
 
