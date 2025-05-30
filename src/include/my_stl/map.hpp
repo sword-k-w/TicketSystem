@@ -751,6 +751,25 @@ public:
     }
     return cend();
   }
+  iterator lower_bound(const Key &key) {
+    if (empty()) {
+      return end();
+    }
+    node *cur = root_;
+    while (true) {
+      if (Compare()(cur->val_.first, key)) {
+        if (cur->right_son_ == nullptr) {
+          return ++iterator(this, cur);
+        }
+        cur = cur->right_son_;
+      } else {
+        if (cur->left_son_ == nullptr) {
+          return iterator(this, cur);
+        }
+        cur = cur->left_son_;
+      }
+    }
+  }
 };
 
 }

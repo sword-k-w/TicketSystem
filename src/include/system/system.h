@@ -23,6 +23,7 @@ public:
   void ReleaseTrain();
   void QueryTrain();
   void QueryTicket();
+  void QueryTransfer();
 private:
   UserSystem user_system_;
   TrainSystem train_system_;
