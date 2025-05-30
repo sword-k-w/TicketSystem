@@ -9,7 +9,7 @@ struct Train {
   array<char, 20> trainID_;
   int stationNum_;
   array<int, 100> stations_;
-  array<int, 99> seatNum_;
+  array<array<int, 99>, 92> seatNum_;
   array<int, 99> prices_;
   array<int, 100> arrivingTimes_;
   array<int, 98> stopoverTimes_;
@@ -49,7 +49,7 @@ struct StationComparator {
 
 struct StationTrain {
   int station_id_;
-  array<char, 20> trainID_;
+  int train_id_;
 };
 
 struct StationTrainComparator {
@@ -60,10 +60,10 @@ struct StationTrainComparator {
     if (x.station_id_ < y.station_id_) {
       return -1;
     }
-    if (x.trainID_ > y.trainID_) {
+    if (x.train_id_ > y.train_id_) {
       return 1;
     }
-    if (x.trainID_ < y.trainID_) {
+    if (x.train_id_ < y.train_id_) {
       return -1;
     }
     return 0;

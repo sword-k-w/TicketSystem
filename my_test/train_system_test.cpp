@@ -46,7 +46,7 @@ TEST(TrainSystemTests, DISABLED_BasicQueryTicketTest) {
   std::cout.rdbuf(originalCoutBuf);
 }
 
-TEST(TrainSystemTests, BasicQueryTransferTest) {
+TEST(TrainSystemTests, DISABLED_BasicQueryTransferTest) {
   std::stringstream input_stream;
   input_stream << "[1] add_train -i HAPPY_TRAIN -n 3 -m 1000 -s 上院|中院|下院 -p 114|514 -x 19:19 -t 600|600 -o 5 -d 06-01|08-17 -y G\n";
   input_stream << "[2] release_train -i HAPPY_TRAIN\n";

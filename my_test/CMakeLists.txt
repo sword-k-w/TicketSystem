@@ -18,6 +18,7 @@ add_executable(train_system_test
         ../src/system/input.cpp
         ../src/system/user_system/user_system.cpp
         ../src/system/train_system/train_system.cpp
+        ../src/system/ticket_system/ticket_system.cpp
         ../src/system/system.cpp
         train_system_test.cpp)
 

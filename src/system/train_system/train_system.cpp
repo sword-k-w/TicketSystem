@@ -2,6 +2,12 @@
 
 namespace sjtu {
 
+auto TrainSystem::TrainID(const array<char, 20> &train) -> int {
+  vector<int> tmp;
+  assert(train_id_.GetValue(train, &tmp));
+  return tmp[0];
+}
+
 auto TrainSystem::StationID(array<unsigned int, 10> &station, bool add_new) -> int {
   vector<int> tmp;
   if (station_id_.GetValue(station, &tmp)) {
@@ -22,34 +28,48 @@ auto TrainSystem::StationName(const int &id) -> array<unsigned int, 10> {
   return res;
 }
 
-auto TrainSystem::AddTrain(const Train &train) -> bool {
-  return trains_.Insert(train.trainID_, train);
+auto TrainSystem::AddTrain(Train &train) -> bool {
+  int new_id = train_id_.GetSize() + 1;
+  if (!train_id_.Insert(train.trainID_, new_id)) {
+    return false;
+  }
+  trains_.Update(train, new_id);
+  return true;
 }
 
 void TrainSystem::DeleteTrain(const array<char, 20> &trainID) {
-  trains_.Remove(trainID);
+  train_id_.Remove(trainID);
 }
 
 void TrainSystem::ReleaseTrain(Train &train) {
-  DeleteTrain(train.trainID_);
   train.is_released_ = true;
-  AddTrain(train);
-  // add station info
+  int id = TrainID(train.trainID_);
+  trains_.Update(train, id);
   for (int i = 0; i < train.stationNum_; ++i) {
-    station_info_.Insert({train.stations_[i], train.trainID_}, train.trainID_);
+    station_info_.Insert({train.stations_[i], id}, id);
   }
+}
+
+auto TrainSystem::QueryTrain(const int &train_id) -> Train {
+  Train res;
+  trains_.Read(res, train_id);
+  return res;
 }
 
 auto TrainSystem::QueryTrain(const array<char, 20> &trainID) -> Train {
-  vector<Train> tmp;
-  if (!trains_.GetValue(trainID, &tmp)) {
+  vector<int> tmp;
+  if (!train_id_.GetValue(trainID, &tmp)) {
     return {};
   }
   assert(tmp.size() == 1);
-  return tmp[0];
+  return QueryTrain(tmp[0]);
 }
 
-void TrainSystem::QueryStationInfo(const int &id, vector<array<char, 20>> *info) {
+void TrainSystem::UpdateTrain(const int &train_id, Train &new_train) {
+  trains_.Update(new_train, train_id);
+}
+
+void TrainSystem::QueryStationInfo(const int &id, vector<int> *info) {
   station_info_.GetAllValue({id}, info);
 }
 

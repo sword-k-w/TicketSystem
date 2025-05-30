@@ -3,7 +3,7 @@
 
 #include "system/user_system/user_system.h"
 #include "system/train_system/train_system.h"
-#include "system/ticket_system/ticket.h"
+#include "system/ticket_system/ticket_system.h"
 #include "system/input.h"
 
 namespace sjtu {
@@ -24,9 +24,11 @@ public:
   void QueryTrain();
   void QueryTicket();
   void QueryTransfer();
+  void BuyTicket();
 private:
   UserSystem user_system_;
   TrainSystem train_system_;
+  TicketSystem ticket_system_;
   map<array<char, 20>, User> online_users_;
   Input input_;
   int timestamp_;

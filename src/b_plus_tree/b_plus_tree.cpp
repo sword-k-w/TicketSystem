@@ -2,6 +2,7 @@
 #include "comparator.h"
 #include "system/user_system/user.h"
 #include "system/train_system/train.h"
+#include "system/ticket_system/ticket.h"
 
 namespace sjtu {
 
@@ -645,8 +646,10 @@ auto BPLUSTREE_TYPE::GetSize() const -> int {
 
 template class BPlusTree<Key, int, Comparator, RoughComparator>;
 template class BPlusTree<array<char, 20>, User, UserComparator, UserComparator>;
-template class BPlusTree<array<char, 20>, Train, TrainComparator, TrainComparator>;
+template class BPlusTree<array<char, 20>, int, TrainComparator, TrainComparator>;
 template class BPlusTree<array<unsigned int, 10>, int, StationComparator, StationComparator>;
-template class BPlusTree<StationTrain, array<char, 20>, StationTrainComparator, StationIDComparator>;
+template class BPlusTree<StationTrain, int, StationTrainComparator, StationIDComparator>;
+template class BPlusTree<BuyInfo, Order, BuyInfoComparator, BuyInfoComparator>;
+template class BPlusTree<int, Order, TimeComparator, TimeComparator>;
 
 }
