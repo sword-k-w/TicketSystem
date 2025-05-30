@@ -80,11 +80,15 @@ class BPlusTree {
   // Return all value satisfied rough comparator
   void GetAllValue(const KeyType &key, vector<ValueType> *result);
 
+  void GetAll(vector<ValueType> *result);
+
   // Return the page id of the root node
   auto GetRootPageId() const -> int;
 
   // Return the size of bpt
   auto GetSize() const -> int;
+
+  void Clean();
 
  private:
 

@@ -58,6 +58,8 @@ class DiskManager {
    */
   virtual void DeletePage(int page_id);
 
+  void Clean();
+
   /** @return the number of disk flushes */
   auto GetNumFlushes() const -> int;
 

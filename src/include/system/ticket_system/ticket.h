@@ -123,13 +123,8 @@ struct TimeComparator {
 };
 
 struct Order {
-  array<char, 20> user_;
-  int buy_time_;
-  array<char, 20> trainID_;
-  int date_;
-  int start_station_;
-  int end_station_;
-  int number_;
+  BuyInfo info_;
+  Ticket ticket_;
   enum {
     kSuccess, kPending, kRefunded
   } state_;

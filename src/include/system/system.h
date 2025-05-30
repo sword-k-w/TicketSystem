@@ -25,6 +25,9 @@ public:
   void QueryTicket();
   void QueryTransfer();
   void BuyTicket();
+  void QueryOrder();
+  void RefundTicket();
+  void Clean();
 private:
   UserSystem user_system_;
   TrainSystem train_system_;

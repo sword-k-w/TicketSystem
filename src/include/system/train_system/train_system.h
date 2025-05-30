@@ -19,6 +19,7 @@ public:
   auto QueryTrain(const array<char, 20> &trainID) -> Train;
   void UpdateTrain(const int &train_id, Train &new_train);
   void QueryStationInfo(const int &id, vector<int> *info);
+  void Clean();
   TrainSystem() = delete;
   explicit TrainSystem(const std::string &name) : train_id_(name + "_train_id"), trains_(name + "_trains"),
     station_id_(name + "_station_id"), station_info_(name + "_station_info"), station_name_(name + "_station_name") {

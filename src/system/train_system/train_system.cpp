@@ -73,5 +73,12 @@ void TrainSystem::QueryStationInfo(const int &id, vector<int> *info) {
   station_info_.GetAllValue({id}, info);
 }
 
+void TrainSystem::Clean() {
+  train_id_.Clean();
+  station_id_.Clean();
+  station_info_.Clean();
+  station_name_.Initialise();
+  trains_.Initialise();
+}
 
 }

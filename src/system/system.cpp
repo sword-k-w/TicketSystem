@@ -41,6 +41,12 @@ void System::Run() {
       QueryTransfer();
     } else if (command == "buy_ticket") {
       BuyTicket();
+    } else if (command == "query_order") {
+      QueryOrder();
+    } else if (command == "refund_ticket") {
+      RefundTicket();
+    } else if (command == "clean") {
+      Clean();
     } else {
       assert(command == "exit");
       std::cout << "bye\n";
@@ -563,24 +569,26 @@ void System::QueryTransfer() {
 
 void System::BuyTicket() {
   Order order;
-  order.buy_time_ = timestamp_;
+  order.info_.buy_time_ = timestamp_;
   std::string option = "false";
+  int date;
+  array<char, 20> trainID;
   while (true) {
     auto key = input_.GetKey();
     if (key == 'u') {
-      order.user_ = input_.GetString<20>();
+      order.info_.user_ = input_.GetString<20>();
     } else if (key == 'i') {
-      order.trainID_ = input_.GetString<20>();
+      trainID = input_.GetString<20>();
     } else if (key == 'd') {
-      order.date_ = input_.GetDate();
+      date = input_.GetDate();
     } else if (key == 'n') {
-      order.number_ = input_.GetInteger();
+      order.ticket_.seat_ = input_.GetInteger();
     } else if (key == 'f') {
       array<unsigned int, 10> start_station = input_.GetChinese<10>();
-      order.start_station_ = train_system_.StationID(start_station, false);
+      order.ticket_.start_station_ = train_system_.StationID(start_station, false);
     } else if (key == 't') {
       array<unsigned int, 10> end_station = input_.GetChinese<10>();
-      order.end_station_ = train_system_.StationID(end_station, false);
+      order.ticket_.end_station_ = train_system_.StationID(end_station, false);
     } else if (key == 'q') {
       option = input_.GetCommand();
     } else {
@@ -588,12 +596,12 @@ void System::BuyTicket() {
       break;
     }
   }
-  if (order.start_station_ == -1 || order.end_station_ == -1 || online_users_.find(order.user_) == online_users_.end()) {
+  if (order.ticket_.start_station_ == -1 || order.ticket_.end_station_ == -1 || online_users_.find(order.info_.user_) == online_users_.end()) {
     std::cout << "-1\n";
     return;
   }
-  auto train_id = train_system_.TrainID(order.trainID_);
-  auto train = train_system_.QueryTrain(train_id);
+  order.ticket_.train_id_ = train_system_.TrainID(trainID);
+  auto train = train_system_.QueryTrain(order.ticket_.train_id_);
   if (!train.is_released_) {
     std::cout << "-1\n";
     return;
@@ -601,25 +609,33 @@ void System::BuyTicket() {
   int start_pos = -1;
   int end_pos = -1;
   for (int i = 0; i < train.stationNum_; ++i) {
-    if (train.stations_[i] == order.start_station_) {
+    if (train.stations_[i] == order.ticket_.start_station_) {
       start_pos = i;
-    } else if (train.stations_[i] == order.end_station_) {
+    } else if (train.stations_[i] == order.ticket_.end_station_) {
       end_pos = i;
     }
   }
   if (start_pos >= 0 && end_pos >= 0 && start_pos > end_pos) {
-    int start_date = order.date_ - train.arrivingTimes_[start_pos] / 1440;
+    int start_total_time = train.arrivingTimes_[start_pos];
+    if (start_pos > 0) {
+      start_total_time += train.stopoverTimes_[start_pos - 1];
+    }
+    int start_date = date - start_total_time / 1440;
     if (start_date < train.saleDate_start_ || start_date > train.saleDate_end_) {
       std::cout << "-1\n";
       return;
     }
-    int seat = MAX_SEAT_NUM;
+    order.ticket_.start_time_ = start_date * 1440 + start_total_time;
+    order.ticket_.end_station_ = start_date * 1440 + train.arrivingTimes_[end_pos];
+    order.ticket_.seat_ = MAX_SEAT_NUM;
+    order.ticket_.price_ = 0;
     for (int i = start_pos; i < end_pos; ++i) {
-      if (train.seatNum_[start_date][i] < seat) {
-        seat = train.seatNum_[start_date][i];
+      order.ticket_.price_ += train.prices_[i];
+      if (train.seatNum_[start_date][i] < order.ticket_.seat_) {
+        order.ticket_.seat_ = train.seatNum_[start_date][i];
       }
     }
-    if (seat < order.number_) {
+    if (order.ticket_.seat_ < order.ticket_.seat_) {
       if (option[0] == 'f') {
         std::cout << "-1\n";
       } else {
@@ -629,15 +645,135 @@ void System::BuyTicket() {
       }
     } else {
       for (int i = start_pos; i < end_pos; ++i) {
-        train.seatNum_[start_date][i] -= seat;
+        train.seatNum_[start_date][i] -= order.ticket_.seat_;
       }
-      train_system_.UpdateTrain(train_id, train);
+      train_system_.UpdateTrain(order.ticket_.train_id_, train);
       order.state_ = Order::kSuccess;
       ticket_system_.AddOrder(order);
     }
   } else {
     std::cout << "-1\n";
   }
+}
+
+void System::QueryOrder() {
+  assert(input_.GetKey() == 'u');
+  array<char, 20> username = input_.GetString<20>();
+  assert(input_.GetKey() == '\n');
+  if (online_users_.find(username) == online_users_.end()) {
+    std::cout << "-1\n";
+  } else {
+    vector<Order> tmp;
+    ticket_system_.QueryOrder(username, &tmp);
+    size_t size = tmp.size();
+    std::cout << size << '\n';
+    for (size_t i = 0; i < size; ++i) {
+      std::cout << '[';
+      if (tmp[i].state_ == Order::kSuccess) {
+        std::cout << "success";
+      } else if (tmp[i].state_ == Order::kPending) {
+        std::cout << "pending";
+      } else {
+        std::cout << "refunded";
+      }
+      std::cout << "] ";
+      std::cout << ArrayToString<20>(train_system_.QueryTrain(tmp[i].ticket_.train_id_).trainID_) << " ";
+      std::cout << ChineseToString<10>(train_system_.StationName(tmp[i].ticket_.start_station_)) << " ";
+      PrintTime(tmp[i].ticket_.start_time_);
+      std::cout << " -> ";
+      std::cout << ChineseToString<10>(train_system_.StationName(tmp[i].ticket_.end_station_)) << " ";
+      PrintTime(tmp[i].ticket_.end_time_);
+      std::cout << " " << tmp[i].ticket_.price_ << " " << tmp[i].ticket_.seat_;
+    }
+  }
+}
+
+void System::RefundTicket() {
+  array<char, 20> username;
+  int index = 1;
+  while (true) {
+    auto key = input_.GetKey();
+    if (key == 'u') {
+      username = input_.GetString<20>();
+    } else if (key == 'n') {
+      index = input_.GetInteger();
+    } else {
+      assert(key == '\n');
+      break;
+    }
+  }
+  if (online_users_.find(username) == online_users_.end()) {
+    std::cout << "-1\n";
+  }
+  vector<Order> tmp;
+  ticket_system_.QueryOrder(username, &tmp);
+  size_t size = tmp.size();
+  Order &order = tmp[size - index];
+  if (size < index || order.state_ == Order::kPending) {
+    std::cout << "-1\n";
+  } else {
+    if (order.state_ == Order::kSuccess) {
+      Train train = train_system_.QueryTrain(order.ticket_.train_id_);
+      int start_pos = -1, end_pos = -1;
+      for (int i = 0; i < train.stationNum_; ++i) {
+        if (train.stations_[i] == order.ticket_.start_station_) {
+          start_pos = i;
+        } else if (train.stations_[i] == order.ticket_.end_station_) {
+          end_pos = i;
+        }
+      }
+      int start_date = (order.ticket_.start_time_ - train.arrivingTimes_[start_pos]) / 1440;
+      for (int i = start_pos; i < end_pos; ++i) {
+        train.seatNum_[start_date][i] -= order.ticket_.seat_;
+      }
+      train_system_.UpdateTrain(order.ticket_.train_id_, train);
+
+      vector<Order> queue;
+      ticket_system_.GetQueue(&queue);
+      size_t queue_size = queue.size();
+      for (size_t i = 0; i < queue_size; ++i) {
+        if (queue[i].ticket_.train_id_ == order.ticket_.train_id_) {
+          train = train_system_.QueryTrain(queue[i].ticket_.train_id_);
+          start_pos = -1, end_pos = -1;
+          for (int j = 0; j < train.stationNum_; ++j) {
+            if (train.stations_[j] == queue[i].ticket_.start_station_) {
+              start_pos = j;
+            } else if (train.stations_[j] == queue[i].ticket_.end_station_) {
+              end_pos = j;
+            }
+          }
+          start_date = (queue[i].ticket_.start_time_ - train.arrivingTimes_[start_pos]) / 1440;
+          int seat = MAX_SEAT_NUM;
+          for (int j = start_pos; j < end_pos; ++j) {
+            if (train.seatNum_[start_date][j] < seat) {
+              seat = train.seatNum_[start_date][j];
+            }
+          }
+          if (seat >= queue[i].ticket_.seat_) {
+            for (int j = start_pos; j < end_pos; ++j) {
+              train.seatNum_[start_date][j] -= seat;
+            }
+            ticket_system_.RemoveFromQueue(queue[i].info_.buy_time_);
+            ticket_system_.DeleteOrder(queue[i]);
+            queue[i].state_ = Order::kSuccess;
+            ticket_system_.AddOrder(queue[i]);
+          }
+        }
+      }
+      train_system_.UpdateTrain(order.ticket_.train_id_, train);
+    } else {
+      ticket_system_.RemoveFromQueue(order.info_.buy_time_);
+    }
+    ticket_system_.DeleteOrder(order);
+    std::cout << "0\n";
+  }
+}
+
+void System::Clean() {
+  user_system_.Clean();
+  train_system_.Clean();
+  ticket_system_.Clean();
+  online_users_.clear();
 }
 
 }

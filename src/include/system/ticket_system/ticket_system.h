@@ -8,8 +8,12 @@ namespace sjtu {
 
 class TicketSystem {
 public:
-
   void AddOrder(const Order &order);
+  void DeleteOrder(const Order &order);
+  void QueryOrder(const array<char, 20> &user, vector<Order> *tmp);
+  void GetQueue(vector<Order> *tmp);
+  void RemoveFromQueue(const int &time);
+  void Clean();
   TicketSystem() = delete;
   explicit TicketSystem(const std::string &name) : orders_(name + "_order"), queue_(name + "_queue") {}
 

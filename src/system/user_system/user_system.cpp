@@ -24,4 +24,8 @@ auto UserSystem::IsEmpty() -> bool {
   return users_.IsEmpty();
 }
 
+void UserSystem::Clean() {
+  users_.Clean();
+}
+
 }

@@ -629,6 +629,46 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
   }
 }
 
+INDEX_TEMPLATE_ARGUMENTS
+void BPLUSTREE_TYPE::GetAll(vector<ValueType> *result) {
+  Context ctx;
+  ctx.root_page_id_ = GetRootPageId();
+  if (ctx.root_page_id_ == -1) {
+    return;
+  }
+  ctx.read_set_.emplace_back(bpm_->ReadPage(ctx.root_page_id_));
+  while (true) {
+    auto it = --ctx.read_set_.end();
+    auto page = it->As<BPlusTreePage>();
+    auto size = page->GetSize();
+    if (page->IsLeafPage()) {
+      auto leaf_page = it->As<LeafPage>();
+      while (true) {
+        for (int i = 0; i < size; ++i) {
+          result->push_back(leaf_page->RidAt(i));
+        }
+        if (leaf_page->next_page_id_ == -1) {
+          return;
+        }
+        leaf_page = bpm_->ReadPage(leaf_page->next_page_id_).As<LeafPage>();
+        size = leaf_page->GetSize();
+      }
+    }
+    auto internal_page = it->As<InternalPage>();
+    ctx.read_set_.emplace_back(bpm_->ReadPage(internal_page->ValueAt(0)));
+  }
+}
+
+INDEX_TEMPLATE_ARGUMENTS
+auto BPLUSTREE_TYPE::Clean() {
+  disk_manager_->Clean();
+  delete bpm_;
+  bpm_ = new BufferPoolManager(1200, disk_manager_, 10);
+  WritePageGuard guard = bpm_->WritePage(header_page_id_);
+  auto root_page = guard.AsMut<BPlusTreeHeaderPage>();
+  bpm_->InitPageCnt(root_page->page_cnt_);
+}
+
 /**
  * @return Page id of the root of this tree
  *

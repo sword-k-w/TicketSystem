@@ -122,6 +122,14 @@ void DiskManager::ReadPage(int page_id, char *page_data) {
  */
 void DiskManager::DeletePage(int page_id) { num_deletes_ += 1; }
 
+void DiskManager::Clean() {
+  db_io_.clear();
+  db_io_.open(file_name_, std::ios::binary | std::ios::trunc | std::ios::out | std::ios::in);
+  std::filesystem::resize_file(file_name_, (page_capacity_ + 1) * BUSTUB_PAGE_SIZE);
+  assert(static_cast<size_t>(GetFileSize(file_name_)) >= page_capacity_ * BUSTUB_PAGE_SIZE);
+  buffer_used = nullptr;
+}
+
 /**
  * Returns number of flushes made so far
  */

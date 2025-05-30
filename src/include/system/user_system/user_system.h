@@ -12,6 +12,7 @@ public:
   auto QueryUser(const array<char, 20> &username) -> User;
   void RemoveUser(const array<char, 20> &username);
   auto IsEmpty() -> bool;
+  void Clean();
   UserSystem() = delete;
   explicit UserSystem(const std::string &name) : users_(name) {}
 private:
