@@ -123,8 +123,15 @@ void DiskManager::ReadPage(int page_id, char *page_data) {
 void DiskManager::DeletePage(int page_id) { num_deletes_ += 1; }
 
 void DiskManager::Clean() {
-  db_io_.clear();
+  db_io_.close();
+  db_io_.open(file_name_, std::ios::out);
+  db_io_.close();
   db_io_.open(file_name_, std::ios::binary | std::ios::trunc | std::ios::out | std::ios::in);
+  page_capacity_ = 16;
+  pages_ = 0;
+  num_deletes_ = 0;
+  num_flushes_ = 0;
+  num_writes_ = 0;
   std::filesystem::resize_file(file_name_, (page_capacity_ + 1) * BUSTUB_PAGE_SIZE);
   assert(static_cast<size_t>(GetFileSize(file_name_)) >= page_capacity_ * BUSTUB_PAGE_SIZE);
   buffer_used = nullptr;

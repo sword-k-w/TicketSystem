@@ -774,6 +774,7 @@ void System::Clean() {
   train_system_.Clean();
   ticket_system_.Clean();
   online_users_.clear();
+  std::cout << "0\n";
 }
 
 }

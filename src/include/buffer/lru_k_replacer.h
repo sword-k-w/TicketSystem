@@ -62,6 +62,8 @@ class LRUKReplacer {
 
   auto Size() -> size_t;
 
+  void Clean();
+
  private:
   // Remove maybe_unused if you start using them.
   map<int, LRUKNode> node_store_;

@@ -46,14 +46,15 @@ TEST(TrainSystemTests, DISABLED_BasicQueryTicketTest) {
   std::cout.rdbuf(originalCoutBuf);
 }
 
-TEST(TrainSystemTests, DISABLED_BasicQueryTransferTest) {
+TEST(TrainSystemTests, BasicQueryTransferTest) {
   std::stringstream input_stream;
-  input_stream << "[1] add_train -i HAPPY_TRAIN -n 3 -m 1000 -s 上院|中院|下院 -p 114|514 -x 19:19 -t 600|600 -o 5 -d 06-01|08-17 -y G\n";
-  input_stream << "[2] release_train -i HAPPY_TRAIN\n";
-  input_stream << "[3] add_train -i HAHA_TRAIN -n 2 -m 500 -s 中院|下院 -p 600 -x 10:25 -t 660 -o _ -d 06-01|08-17 -y H\n";
-  input_stream << "[4] release_train -i HAHA_TRAIN\n";
-  input_stream << "[5] query_transfer -s 上院 -t 下院 -d 08-16\n";
-  input_stream << "[6] exit\n";
+  input_stream << "[1] clean\n";
+  input_stream << "[2] add_train -i HAPPY_TRAIN -n 3 -m 1000 -s 上院|中院|下院 -p 114|514 -x 19:19 -t 600|600 -o 5 -d 06-01|08-17 -y G\n";
+  input_stream << "[3] release_train -i HAPPY_TRAIN\n";
+  input_stream << "[4] add_train -i HAHA_TRAIN -n 2 -m 500 -s 中院|下院 -p 600 -x 10:25 -t 660 -o _ -d 06-01|08-17 -y H\n";
+  input_stream << "[5] release_train -i HAHA_TRAIN\n";
+  input_stream << "[6] query_transfer -s 上院 -t 下院 -d 08-16\n";
+  input_stream << "[7] exit\n";
   std::cin.rdbuf(input_stream.rdbuf());
   std::cerr << input_stream.str();
 
@@ -65,7 +66,7 @@ TEST(TrainSystemTests, DISABLED_BasicQueryTransferTest) {
   System system("sword");
   system.Run();
 
-  EXPECT_EQ(output_stream.str(), "[1] 0\n[2] 0\n[3] 0\n[4] 0\n[5] HAPPY_TRAIN 上院 08-16 19:19 -> 中院 08-17 05:19 114 500\nHAHA_TRAIN 中院 08-17 10:25 -> 下院 08-17 21:25 600 500\n[6] bye\n");
+  EXPECT_EQ(output_stream.str(), "[1] 0\n[2] 0\n[3] 0\n[4] 0\n[5] 0\n[6] HAPPY_TRAIN 上院 08-16 19:19 -> 中院 08-17 05:19 114 500\nHAHA_TRAIN 中院 08-17 10:25 -> 下院 08-17 21:25 600 500\n[7] bye\n");
 
   std::cout.rdbuf(originalCoutBuf);
 }

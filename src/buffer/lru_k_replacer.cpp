@@ -16,6 +16,14 @@ void LRUKNode::AddVisit(size_t time) {
  */
 LRUKReplacer::LRUKReplacer(size_t num_frames, size_t k) : replacer_size_(num_frames), k_(k) {}
 
+void LRUKReplacer::Clean() {
+  node_store_.clear();
+  curr_size_ = 0;
+  current_timestamp_ = 0;
+  evictable_size_ = 0;
+}
+
+
 /**
  *
  * @brief Find the frame with largest backward k-distance and evict that frame. Only frames

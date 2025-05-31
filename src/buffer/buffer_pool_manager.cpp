@@ -75,6 +75,18 @@ BufferPoolManager::BufferPoolManager(size_t num_frames, std::shared_ptr<DiskMana
   }
 }
 
+void BufferPoolManager::Clean() {
+  next_page_id_ = 0;
+  replacer_->Clean();
+  disk_manager_->Clean();
+  page_table_.clear();
+  free_frames_.clear();
+  for (size_t i = 0; i < num_frames_; ++i) {
+    free_frames_.push_back(static_cast<int>(i));
+  }
+}
+
+
 /**
  * @brief Destroys the `BufferPoolManager`, freeing up all memory that the buffer pool was using.
  */

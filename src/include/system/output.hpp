@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <cassert>
+#include "my_stl/array.hpp"
 
 namespace sjtu {
 
