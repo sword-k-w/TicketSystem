@@ -10,7 +10,7 @@ INDEX_TEMPLATE_ARGUMENTS
 BPLUSTREE_TYPE::BPlusTree(std::string name, int leaf_max_size, int internal_max_size)
     : index_name_(std::move(name)),
       disk_manager_(std::make_shared<DiskManager>(index_name_)),
-      bpm_(new BufferPoolManager(300, disk_manager_, 10)),
+      bpm_(new BufferPoolManager(100, disk_manager_, 10)),
       leaf_max_size_(leaf_max_size),
       internal_max_size_(internal_max_size),
       header_page_id_(bpm_->NewPage()) {
