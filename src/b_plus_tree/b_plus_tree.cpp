@@ -373,7 +373,6 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
           root_page->SetRidAt(j - 1, root_page->RidAt(j));
         }
         root_page->ChangeSizeBy(-1);
-        --bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->size_;
         if (root_page->GetSize() == 0) {
           guard.Drop();
           bpm_->DeletePage(ctx.root_page_id_);
@@ -401,7 +400,6 @@ void BPLUSTREE_TYPE::Remove(const KeyType &key) {
       if (pos == -1) {
         return;
       }
-      --bpm_->WritePage(header_page_id_).AsMut<BPlusTreeHeaderPage>()->size_;
       if (size > leaf_page->GetMinSize()) {
         for (int i = pos + 1; i < size; ++i) {
           leaf_page->SetKeyAt(i - 1, leaf_page->KeyAt(i));
@@ -693,7 +691,7 @@ template class BPlusTree<array<char, 20>, User, UserComparator, UserComparator>;
 template class BPlusTree<array<char, 20>, int, TrainComparator, TrainComparator>;
 template class BPlusTree<array<unsigned int, 10>, int, StationComparator, StationComparator>;
 template class BPlusTree<StationTrain, int, StationTrainComparator, StationIDComparator>;
-template class BPlusTree<BuyInfo, Order, BuyInfoComparator, BuyInfoComparator>;
+template class BPlusTree<BuyInfo, Order, BuyInfoComparator, RoughBuyInfoComparator>;
 template class BPlusTree<int, Order, TimeComparator, TimeComparator>;
 
 }

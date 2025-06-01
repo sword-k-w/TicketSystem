@@ -71,9 +71,12 @@ inline void PrintTime(int time) {
   } else if (day < 61) {
     std::cout << "07-";
     PrintTwoBitNumber(day - 29);
-  } else {
+  } else if (day < 92) {
     std::cout << "08-";
     PrintTwoBitNumber(day - 60);
+  } else {
+    std::cout << "09-";
+    PrintTwoBitNumber(day - 91);
   }
   std::cout << ' ';
   PrintTwoBitNumber(hour);

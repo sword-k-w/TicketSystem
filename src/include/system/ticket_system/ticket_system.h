@@ -18,7 +18,7 @@ public:
   explicit TicketSystem(const std::string &name) : orders_(name + "_order"), queue_(name + "_queue") {}
 
 private:
-  BPlusTree<BuyInfo, Order, BuyInfoComparator, BuyInfoComparator> orders_;
+  BPlusTree<BuyInfo, Order, BuyInfoComparator, RoughBuyInfoComparator> orders_;
   BPlusTree<int, Order, TimeComparator, TimeComparator> queue_;
 };
 

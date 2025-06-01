@@ -66,7 +66,7 @@ template class BPlusTreeInternalPage<array<char, 20>, int, UserComparator, UserC
 template class BPlusTreeInternalPage<array<char, 20>, int, TrainComparator, TrainComparator>;
 template class BPlusTreeInternalPage<array<unsigned int, 10>, int, StationComparator, StationComparator>;
 template class BPlusTreeInternalPage<StationTrain, int, StationTrainComparator, StationIDComparator>;
-template class BPlusTreeInternalPage<BuyInfo, int, BuyInfoComparator, BuyInfoComparator>;
+template class BPlusTreeInternalPage<BuyInfo, int, BuyInfoComparator, RoughBuyInfoComparator>;
 template class BPlusTreeInternalPage<int, int, TimeComparator, TimeComparator>;
 
 }

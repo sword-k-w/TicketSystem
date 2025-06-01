@@ -60,7 +60,7 @@ template class BPlusTreeLeafPage<array<char, 20>, User, UserComparator, UserComp
 template class BPlusTreeLeafPage<array<char, 20>, int, TrainComparator, TrainComparator>;
 template class BPlusTreeLeafPage<array<unsigned int, 10>, int, StationComparator, StationComparator>;
 template class BPlusTreeLeafPage<StationTrain, int, StationTrainComparator, StationIDComparator>;
-template class BPlusTreeLeafPage<BuyInfo, Order, BuyInfoComparator, BuyInfoComparator>;
+template class BPlusTreeLeafPage<BuyInfo, Order, BuyInfoComparator, RoughBuyInfoComparator>;
 template class BPlusTreeLeafPage<int, Order, TimeComparator, TimeComparator>;
 
 }

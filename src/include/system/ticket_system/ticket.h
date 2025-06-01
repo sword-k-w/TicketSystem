@@ -25,26 +25,8 @@ struct Ticket {
   }
 };
 
-struct TimeFirstComparator {
-  bool operator () (const Ticket &x, const Ticket &y) { // x < y return true, for map only
-    if (x.end_time_ - x.start_time_ == y.end_time_ - y.start_time_) {
-      return x.train_id_ < y.train_id_;
-    }
-    return x.end_time_ - x.start_time_ < y.end_time_ - y.start_time_;
-  }
-};
-
-struct CostFirstComparator {
-  bool operator () (const Ticket &x, const Ticket &y) { // same as above
-    if (x.price_ == y.price_) {
-      return x.train_id_ < y.train_id_;
-    }
-    return x.price_ < y.price_;
-  }
-};
-
 struct EndStationFirstComparator {
-  bool operator () (const Ticket &x, const Ticket &y) { // same as above
+  bool operator () (const Ticket &x, const Ticket &y) { // for map
     if (x.end_station_ == y.end_station_) {
       return x.train_id_ < y.train_id_;
     }
@@ -55,36 +37,6 @@ struct EndStationFirstComparator {
 struct TransferTicket {
   Ticket first_;
   Ticket second_;
-};
-
-struct TransferTimeFirstComparator {
-  bool operator () (const TransferTicket &x, const TransferTicket &y) {
-    if (x.second_.end_time_ - x.first_.start_time_ != y.second_.end_time_ - y.first_.start_time_) {
-      return x.second_.end_time_ - x.first_.start_time_ < y.second_.end_time_ - y.first_.start_time_;
-    }
-    if (x.first_.price_ + x.second_.price_ != y.first_.price_ + y.second_.price_) {
-      return x.first_.price_ + x.second_.price_ < y.first_.price_ + y.second_.price_;
-    }
-    if (x.first_.train_id_ != y.first_.train_id_) {
-      return x.first_.train_id_ < y.first_.train_id_;
-    }
-    return x.second_.train_id_ < y.second_.train_id_;
-  }
-};
-
-struct TransferCostFirstComparator {
-  bool operator () (const TransferTicket &x, const TransferTicket &y) {
-    if (x.first_.price_ + x.second_.price_ != y.first_.price_ + y.second_.price_) {
-      return x.first_.price_ + x.second_.price_ < y.first_.price_ + y.second_.price_;
-    }
-    if (x.second_.end_time_ - x.first_.start_time_ != y.second_.end_time_ - y.first_.start_time_) {
-      return x.second_.end_time_ - x.first_.start_time_ < y.second_.end_time_ - y.first_.start_time_;
-    }
-    if (x.first_.train_id_ != y.first_.train_id_) {
-      return x.first_.train_id_ < y.first_.train_id_;
-    }
-    return x.second_.train_id_ < y.second_.train_id_;
-  }
 };
 
 struct BuyInfo {
@@ -104,6 +56,18 @@ struct BuyInfoComparator {
       return -1;
     }
     if (x.buy_time_ > y.buy_time_) {
+      return 1;
+    }
+    return 0;
+  }
+};
+
+struct RoughBuyInfoComparator {
+  int operator () (const BuyInfo &x, const BuyInfo &y) {
+    if (x.user_ < y.user_) {
+      return -1;
+    }
+    if (x.user_ > y.user_) {
       return 1;
     }
     return 0;

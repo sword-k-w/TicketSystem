@@ -8,11 +8,11 @@ namespace sjtu {
 struct Train {
   array<char, 20> trainID_;
   int stationNum_;
-  array<int, 100> stations_;
-  array<array<int, 99>, 92> seatNum_;
-  array<int, 99> prices_;
-  array<int, 100> arrivingTimes_;
-  array<int, 98> stopoverTimes_;
+  array<int, 24> stations_;
+  array<array<int, 23>, 92> seatNum_;
+  array<int, 23> prices_;
+  array<int, 24> arrivingTimes_;
+  array<int, 22> stopoverTimes_;
   int saleDate_start_;
   int saleDate_end_;
   char type_;

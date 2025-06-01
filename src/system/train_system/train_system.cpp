@@ -1,5 +1,7 @@
 #include "system/train_system/train_system.h"
 
+#include <system/output.hpp>
+
 namespace sjtu {
 
 auto TrainSystem::TrainID(const array<char, 20> &train) -> int {

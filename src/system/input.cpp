@@ -84,11 +84,12 @@ auto Input::GetDate() -> int {
   Skip();
   int res = 0;
   std::cin.get(las_c_);
-  assert(las_c_ > '5' && las_c_ < '9');
   if (las_c_ == '7') {
     res = 30;
   } else if (las_c_ == '8') {
     res = 61;
+  } else if (las_c_ != '6') {
+    res = 114514; // a impossible date
   }
   Skip();
   std::cin.get(las_c_);
@@ -206,8 +207,8 @@ template auto Input::GetString<20>() -> array<char, 20>;
 template auto Input::GetString<30>() -> array<char, 30>;
 template auto Input::GetChinese<5>() -> array<unsigned int, 5>;
 template auto Input::GetChinese<10>() -> array<unsigned int, 10>;
-template auto Input::GetIntegerArray<98>() -> array<int, 98>;
-template auto Input::GetIntegerArray<99>() -> array<int, 99>;
-template auto Input::GetChineseArray<10, 100>() -> array<array<unsigned int, 10>, 100>;
+template auto Input::GetIntegerArray<22>() -> array<int, 22>;
+template auto Input::GetIntegerArray<23>() -> array<int, 23>;
+template auto Input::GetChineseArray<10, 24>() -> array<array<unsigned int, 10>, 24>;
 
 }
