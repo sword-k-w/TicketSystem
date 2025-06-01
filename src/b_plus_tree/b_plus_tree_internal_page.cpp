@@ -56,10 +56,10 @@ void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetKeyAt(int index, const KeyType &key) { k
  * @return Value at index
  */
 INDEX_TEMPLATE_ARGUMENTS
-auto B_PLUS_TREE_INTERNAL_PAGE_TYPE::ValueAt(int index) const -> ValueType { return page_id_array_[index]; }
+auto B_PLUS_TREE_INTERNAL_PAGE_TYPE::ValueAt(int index) const -> int { return page_id_array_[index]; }
 
 INDEX_TEMPLATE_ARGUMENTS
-void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetValueAt(int index, const ValueType &value) { page_id_array_[index] = value; }
+void B_PLUS_TREE_INTERNAL_PAGE_TYPE::SetValueAt(int index, const int &value) { page_id_array_[index] = value; }
 
 template class BPlusTreeInternalPage<Key, int, Comparator, RoughComparator>;
 template class BPlusTreeInternalPage<array<char, 20>, int, UserComparator, UserComparator>;

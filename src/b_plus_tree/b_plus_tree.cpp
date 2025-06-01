@@ -10,7 +10,7 @@ INDEX_TEMPLATE_ARGUMENTS
 BPLUSTREE_TYPE::BPlusTree(std::string name, int leaf_max_size, int internal_max_size)
     : index_name_(std::move(name)),
       disk_manager_(std::make_shared<DiskManager>(index_name_)),
-      bpm_(new BufferPoolManager(1200, disk_manager_, 10)),
+      bpm_(new BufferPoolManager(300, disk_manager_, 10)),
       leaf_max_size_(leaf_max_size),
       internal_max_size_(internal_max_size),
       header_page_id_(bpm_->NewPage()) {
@@ -690,7 +690,7 @@ template class BPlusTree<Key, int, Comparator, RoughComparator>;
 template class BPlusTree<array<char, 20>, User, UserComparator, UserComparator>;
 template class BPlusTree<array<char, 20>, int, TrainComparator, TrainComparator>;
 template class BPlusTree<array<unsigned int, 10>, int, StationComparator, StationComparator>;
-template class BPlusTree<StationTrain, int, StationTrainComparator, StationIDComparator>;
+template class BPlusTree<StationTrain, TrainStation, StationTrainComparator, StationIDComparator>;
 template class BPlusTree<BuyInfo, Order, BuyInfoComparator, RoughBuyInfoComparator>;
 template class BPlusTree<int, Order, TimeComparator, TimeComparator>;
 

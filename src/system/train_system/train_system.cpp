@@ -48,7 +48,7 @@ void TrainSystem::ReleaseTrain(Train &train) {
   int id = TrainID(train.trainID_);
   trains_.Update(train, id);
   for (int i = 0; i < train.stationNum_; ++i) {
-    station_info_.Insert({train.stations_[i], id}, id);
+    station_info_.Insert({train.stations_[i], id}, {id, i});
   }
 }
 
@@ -71,7 +71,7 @@ void TrainSystem::UpdateTrain(const int &train_id, Train &new_train) {
   trains_.Update(new_train, train_id);
 }
 
-void TrainSystem::QueryStationInfo(const int &id, vector<int> *info) {
+void TrainSystem::QueryStationInfo(const int &id, vector<TrainStation> *info) {
   station_info_.GetAllValue({id}, info);
 }
 

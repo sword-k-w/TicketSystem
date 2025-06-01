@@ -11,7 +11,7 @@ namespace sjtu {
 #define B_PLUS_TREE_INTERNAL_PAGE_TYPE BPlusTreeInternalPage<KeyType, ValueType, KeyComparator, RoughKeyComparator>
 #define INTERNAL_PAGE_HEADER_SIZE 12
 #define INTERNAL_PAGE_SLOT_CNT \
-  ((BUSTUB_PAGE_SIZE - INTERNAL_PAGE_HEADER_SIZE) / ((int)(sizeof(KeyType) + sizeof(ValueType))))  // NOLINT
+  ((BUSTUB_PAGE_SIZE - INTERNAL_PAGE_HEADER_SIZE) / ((int)(sizeof(KeyType) + sizeof(int))))  // NOLINT
 
 /**
  * Store `n` indexed keys and `n + 1` child pointers (page_id) within internal page.
@@ -45,13 +45,13 @@ class BPlusTreeInternalPage : public BPlusTreePage {
 
   void SetKeyAt(int index, const KeyType &key);
 
-  auto ValueAt(int index) const -> ValueType;
+  auto ValueAt(int index) const -> int;
 
-  void SetValueAt(int index, const ValueType &value);
+  void SetValueAt(int index, const int &value);
 
  private:
   KeyType key_array_[INTERNAL_PAGE_SLOT_CNT];
-  ValueType page_id_array_[INTERNAL_PAGE_SLOT_CNT];
+  int page_id_array_[INTERNAL_PAGE_SLOT_CNT];
 };
 
 }

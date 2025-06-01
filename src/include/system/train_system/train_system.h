@@ -18,7 +18,7 @@ public:
   auto QueryTrain(const int &train_id) -> Train;
   auto QueryTrain(const array<char, 20> &trainID) -> Train;
   void UpdateTrain(const int &train_id, Train &new_train);
-  void QueryStationInfo(const int &id, vector<int> *info);
+  void QueryStationInfo(const int &id, vector<TrainStation> *info);
   void Clean();
   TrainSystem() = delete;
   explicit TrainSystem(const std::string &name) : train_id_(name + "_train_id"), trains_(name + "_trains"),
@@ -32,7 +32,7 @@ private:
   BPlusTree<array<unsigned int, 10>, int, StationComparator, StationComparator> station_id_;
   MemoryRiver<array<unsigned int, 10>> station_name_;
   MemoryRiver<Train> trains_;
-  BPlusTree<StationTrain, int, StationTrainComparator, StationIDComparator> station_info_;
+  BPlusTree<StationTrain, TrainStation, StationTrainComparator, StationIDComparator> station_info_;
 };
 
 }

@@ -8,6 +8,7 @@
 #include <climits>
 #include <config.h>
 #include <cstddef>
+#include "my_stl/algorithm.hpp"
 
 namespace sjtu {
 /**
@@ -424,6 +425,10 @@ public:
   }
   const T *data() const {
     return array_;
+  }
+
+  void sort(bool (*cmp)(const T&, const T&)) {
+    Sort(array_, array_ + size_, cmp);
   }
 
 private:

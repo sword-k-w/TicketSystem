@@ -10,16 +10,6 @@ void Input::Skip() {
 auto Input::GetTimestamp() -> int {
   assert(las_c_ == '\n');
   std::cin.get(las_c_);
-  if (las_c_ != '[') {
-    std::cerr << las_c_ << '\n';
-    std::cin.get(las_c_);
-    std::cerr << las_c_ << '\n';
-    std::cin.get(las_c_);
-    std::cerr << las_c_ << '\n';
-    std::cin.get(las_c_);
-    std::cerr << las_c_ << '\n';
-    exit(1);
-  }
   assert(las_c_ == '[');
   int res = 0;
   std::cin.get(las_c_);

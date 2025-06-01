@@ -9,6 +9,7 @@ struct Train {
   array<char, 20> trainID_;
   int stationNum_;
   array<int, 24> stations_;
+  int max_seatNum_;
   array<array<int, 23>, 92> seatNum_;
   array<int, 23> prices_;
   array<int, 24> arrivingTimes_;
@@ -80,6 +81,11 @@ struct StationIDComparator {
     }
     return 0;
   }
+};
+
+struct TrainStation {
+  int train_id_;
+  int pos_;
 };
 
 }

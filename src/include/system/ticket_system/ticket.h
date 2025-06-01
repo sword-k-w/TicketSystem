@@ -25,6 +25,39 @@ struct Ticket {
   }
 };
 
+struct RawTicket {
+  array<char, 20> train_id_;
+  int start_station_;
+  int end_station_;
+  int start_time_;
+  int end_time_;
+  int price_;
+  int seat_;
+  void Print(TrainSystem *train_system) const {
+    std::cout << ArrayToString<20>(train_id_) << " ";
+    std::cout << ChineseToString<10>(train_system->StationName(start_station_)) << " ";
+    PrintTime(start_time_);
+    std::cout << " -> ";
+    std::cout << ChineseToString<10>(train_system->StationName(end_station_)) << " ";
+    PrintTime(end_time_);
+    std::cout << " " << price_ << " " << seat_ << '\n';
+  }
+};
+
+inline bool TimeFirstComparator(const RawTicket &x, const RawTicket &y) {
+  if (x.end_time_ - x.start_time_ == y.end_time_ - y.start_time_) {
+    return x.train_id_ < y.train_id_;
+  }
+  return x.end_time_ - x.start_time_ < y.end_time_ - y.start_time_;
+}
+
+inline bool CostFirstComparator(const RawTicket &x, const RawTicket &y) {
+  if (x.price_ == y.price_) {
+    return x.train_id_ < y.train_id_;
+  }
+  return x.price_ < y.price_;
+}
+
 struct EndStationFirstComparator {
   bool operator () (const Ticket &x, const Ticket &y) { // for map
     if (x.end_station_ == y.end_station_) {
