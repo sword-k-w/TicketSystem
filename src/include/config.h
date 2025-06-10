@@ -3,7 +3,7 @@
 
 namespace sjtu {
 
-static constexpr int BUSTUB_PAGE_SIZE = 4096;                                        // size of a data page in byte
+static constexpr int BUSTUB_PAGE_SIZE = 8192;                                        // size of a data page in byte
 static constexpr int BUFFER_POOL_SIZE = 128;                                         // size of buffer pool
 static constexpr int DEFAULT_DB_IO_SIZE = 16;                                        // starting size of file on disk
 static constexpr int BUCKET_SIZE = 50;                                               // size of extendible hash bucket
